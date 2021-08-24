@@ -1,0 +1,26 @@
+.product {
+  height: 25vw;
+  display: flex;
+  flex-direction: column;
+}
+.image {
+  flex: 1;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.content {
+  padding: 32px;
+}
+
+@media only screen and (max-width: 768px) {
+  .product {
+    height: 50vw;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  .product {
+    height: 100vw;
+  }
+}

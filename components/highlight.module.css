@@ -1,0 +1,13 @@
+.highlight {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.title {
+  padding-bottom: 24px;
+}
+.button {
+  transform: translate(-6px, 0);
+}
