@@ -36,6 +36,18 @@ const theme = createTheme({
       text: {
         fontWeight: 800
       }
+    },
+    MuiSelect: {
+      root: {
+        paddingTop: 0
+      }
+    },
+    MuiInputLabel: {
+      root: {
+        fontWeight: 900,
+        textTransform: 'uppercase',
+        color: grey[900]
+      }
     }
   }
 })

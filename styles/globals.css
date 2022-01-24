@@ -18,3 +18,10 @@ a {
 :root {
   --secondary: #9CA3AF;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--secondary)
+}
