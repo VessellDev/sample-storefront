@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetServerSidePropsContext, GetStaticProps, GetStaticPropsContext, NextPage } from 'next'
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import styles from './produtos.module.css'
 import { mockCategories, mockProducts } from 'mock'
 import Product from 'components/product'

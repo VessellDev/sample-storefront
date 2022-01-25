@@ -8,13 +8,15 @@ interface LogoProps {
 }
 
 const Logo: FC<LogoProps> = ({ className }) => (
-  <Link href='/'>
-    <Image
-      className={[styles.logo, className].join(' ')}
-      src='/images/logo.svg'
-      width={100}
-      height={26}
-    />
+  <Link href='/' passHref>
+    <a>
+      <Image
+        className={[styles.logo, className].join(' ')}
+        src='/images/logo.svg'
+        width={100}
+        height={26}
+      />
+    </a>
   </Link>
 )
 
