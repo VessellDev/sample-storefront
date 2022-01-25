@@ -1,13 +1,22 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { Collapse, FormControl, IconButton, InputLabel, MenuItem, Select, Typography, useMediaQuery } from '@material-ui/core'
 import styles from './filters.module.css'
 import { mockFilters } from 'mock'
 import { FilterList, KeyboardArrowDown } from '@material-ui/icons'
 import classnames from 'classnames'
-import useScrollPosition from '@react-hook/window-scroll'
+import { useLocomotiveScroll } from 'react-locomotive-scroll'
 
 const Filters: FC = () => {
-  const scrollY = useScrollPosition()
+  const { scroll } = useLocomotiveScroll()
+  const [scrollY, setScrollY] = useState(0)
+  const scrolling = scrollY > 0
+
+  useEffect(() => {
+    scroll?.on('scroll', (args: any) => {
+      setScrollY(args.delta.y)
+    })
+  }, [scroll])
+
   const mobile = useMediaQuery('(max-width: 1024px)')
 
   const [active, setActive] = useState(false)

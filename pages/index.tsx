@@ -5,15 +5,23 @@ import Selection from 'components/selection'
 import { NextPage } from 'next'
 import styles from './index.module.css'
 import { mockProducts, mockCategories } from 'mock'
-import useScrollPosition from '@react-hook/window-scroll'
 import classnames from 'classnames'
+import { useLocomotiveScroll } from 'react-locomotive-scroll'
+import { useEffect, useState } from 'react'
 
 const Home: NextPage = () => {
-  const scrollY = useScrollPosition()
+  const { scroll } = useLocomotiveScroll()
+  const [scrollY, setScrollY] = useState(0)
   const scrolling = scrollY > 0
 
+  useEffect(() => {
+    scroll?.on('scroll', (args: any) => {
+      setScrollY(args.delta.y)
+    })
+  }, [scroll])
+
   return (
-    <>
+    <div data-scroll-section id='container'>
       <section className={styles.highlights}>
         <Highlight className={styles.one} href={mockCategories[0].slug}>
           Xiaomi MI 11 a partir <br/> de R$ 2573,00
@@ -40,7 +48,10 @@ const Home: NextPage = () => {
           products={mockProducts.slice(4, 8)}
         />
       </section>
-      <header className={classnames(styles.header, { [styles.scrolling]: scrolling })}>
+      <header
+        data-scroll data-scroll-sticky data-scroll-target='#container'
+        className={classnames(styles.header, { [styles.scrolling]: scrolling })}
+      >
         <div className={styles.container}>
           <div className={styles.content}>
             <Logo />
@@ -48,7 +59,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </header>
-    </>
+    </div>
   )
 }
 
