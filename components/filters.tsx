@@ -9,7 +9,6 @@ import { useLocomotiveScroll } from 'react-locomotive-scroll'
 const Filters: FC = () => {
   const { scroll } = useLocomotiveScroll()
   const [scrollY, setScrollY] = useState(0)
-  const scrolling = scrollY > 0
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {

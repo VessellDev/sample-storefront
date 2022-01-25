@@ -47,7 +47,7 @@ const theme = createTheme({
   },
   overrides: {
     MuiButton: {
-      root: {
+      contained: {
         padding: '16px 32px',
         fontWeight: 800,
         borderRadius: 16

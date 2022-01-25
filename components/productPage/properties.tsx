@@ -41,7 +41,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
         <Typography variant='h1'>
           {name}
         </Typography>
-        <div>
+        <div className={styles.attributes}>
           {attributes.map(attribute => (
             <Attribute
               key={attribute.id}
@@ -53,7 +53,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
         </div>
       </div>
       <div className={styles.footer}>
-        <div>
+        <div className={styles.price}>
           <Typography variant='h2' component='span'>
             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
           </Typography>
@@ -63,13 +63,15 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
         </div>
         <div className={styles.actions}>
           <div className={styles['left-button']}>
-            <Button color='primary' variant='outlined' startIcon={<LocalShipping />}>
+            <Button color='primary' variant='outlined' startIcon={<LocalShipping />} fullWidth>
               CALCULAR FRETE
             </Button>
           </div>
-          <Button color='primary' variant='contained' disableElevation>
-            COMPRAR
-          </Button>
+          <div className={styles['right-button']}>
+            <Button color='primary' variant='contained' disableElevation fullWidth>
+              COMPRAR
+            </Button>
+          </div>
         </div>
       </div>
     </>

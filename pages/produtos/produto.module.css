@@ -9,6 +9,7 @@
   top: 0;
   width: 100%;
   height: 112px;
+  z-index: 1;
 }
 .header .container {
   padding: 32px;
@@ -34,16 +35,29 @@
 
 .content {
   flex: 1;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 1fr;
+  display: flex;
 }
 .content .left {
   position: relative;
+  flex: 1;
 }
 .content .right {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 64px 32px 32px 32px;
+}
+
+@media only screen and (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+  .content .left {
+    height: 60vh;
+    flex: unset;
+  }
+  .content .right {
+    flex: unset;
+  }
 }
