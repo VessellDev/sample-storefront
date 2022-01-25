@@ -13,6 +13,12 @@
   padding: 32px;
 }
 
+@media only screen and (max-width: 1024px) {
+  .product {
+    height: 33.33vw;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .product {
     height: 50vw;

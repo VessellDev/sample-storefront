@@ -1,0 +1,87 @@
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 16px;
+}
+.inputs {
+  padding-right: 10px;
+}
+.input {
+  opacity: 0;
+  transform: translate(24px, 0);
+  transition-property: all;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.3s;
+}
+.select {
+  margin-right: 16px;
+  width: 156px;
+}
+
+.container.active .inputs .input {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.icon {
+  transition: all 0.2s ease-in-out !important;
+}
+.icon.active {
+  transform: rotate(90deg);
+}
+
+@media only screen and (max-width: 1024px) {
+  .container {
+    padding-right: 6px;
+  }
+  .container .shadow {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.26);
+    width: 100vw;
+    height: 100vh;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+  }
+  .container.active .shadow {
+    pointer-events: unset;
+    opacity: 1;
+  }
+
+  .inputs {
+    position: fixed;
+    background: white;
+    width: 100vw;
+    bottom: 0;
+    left: 0;
+    border-radius: 16px 16px 0 0;
+  }
+  .inputs .container {
+    padding: 32px 24px 24px 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .input {
+    width: 100%;
+    margin-top: 16px !important;
+  }
+  .select {
+    width: 100%;
+  }
+
+  .title {
+    width: 100%;
+    padding-bottom: 16px;
+  }
+  .icon {
+    transition: all 0.3s ease-in-out !important;
+  }
+  .icon.active {
+    transform: rotate(180deg);
+  }
+}
