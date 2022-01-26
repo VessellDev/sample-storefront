@@ -15,6 +15,10 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: ['Manrope', 'sans-serif'].join(','),
+    h1: {
+      fontSize: 48,
+      fontWeight: 400
+    },
     h2: {
       fontSize: 36,
       fontWeight: 800
@@ -29,10 +33,30 @@ const theme = createTheme({
     subtitle1: {
       fontSize: 16,
       fontWeight: 800
+    },
+    subtitle2: {
+      fontSize: 12,
+      fontWeight: 800,
+      textTransform: 'uppercase'
+    }
+  },
+  props: {
+    MuiButton: {
+      disableElevation: true
     }
   },
   overrides: {
     MuiButton: {
+      contained: {
+        padding: '16px 32px',
+        fontWeight: 800,
+        borderRadius: 16
+      },
+      outlined: {
+        padding: '16px 32px',
+        fontWeight: 800,
+        borderRadius: 16
+      },
       text: {
         fontWeight: 800
       }
@@ -47,6 +71,11 @@ const theme = createTheme({
         fontWeight: 900,
         textTransform: 'uppercase',
         color: grey[900]
+      }
+    },
+    MuiBreadcrumbs: {
+      separator: {
+        display: 'none'
       }
     }
   }

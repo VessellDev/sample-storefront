@@ -1,0 +1,55 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 64px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left-button {
+  padding-right: 16px;
+}
+
+.attributes {
+  margin-top: 24px;
+}
+
+@media only screen and (max-width: 1280px) {
+  .footer {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .left-button {
+    width: 100%;
+  }
+
+  .price {
+    padding-bottom: 16px;
+    text-align: right;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .actions {
+    flex-direction: column;
+  }
+
+  .left-button {
+    padding-right: unset;
+  }
+
+  .right-button {
+    width: 100%;
+    padding-top: 10px;
+  }
+}
