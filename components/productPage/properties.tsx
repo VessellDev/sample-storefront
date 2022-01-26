@@ -2,8 +2,9 @@ import { FC, useEffect, useState } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { FullProductType } from 'types/fullProduct'
 import styles from './properties.module.css'
-import { LocalShipping } from '@material-ui/icons'
+import { Cancel, LocalShipping } from '@material-ui/icons'
 import Attribute from 'components/productPage/attribute'
+import Shipping from 'components/productPage/shipping'
 
 interface PropertiesProps extends FullProductType {}
 
@@ -13,6 +14,7 @@ interface Selected {
 
 const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
   const [selected, setSelected] = useState<Selected>({})
+  const [shippingActive, setShippingActive] = useState(false)
 
   const getInitialSelected = () => {
     const selected: Selected = {}
@@ -63,7 +65,13 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
         </div>
         <div className={styles.actions}>
           <div className={styles['left-button']}>
-            <Button color='primary' variant='outlined' startIcon={<LocalShipping />} fullWidth>
+            <Button
+              color='primary'
+              variant='outlined'
+              startIcon={shippingActive ? <Cancel /> : <LocalShipping />}
+              fullWidth
+              onClick={() => setShippingActive(!shippingActive)}
+            >
               CALCULAR FRETE
             </Button>
           </div>
@@ -72,6 +80,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
               COMPRAR
             </Button>
           </div>
+          <Shipping active={shippingActive} />
         </div>
       </div>
     </>

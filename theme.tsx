@@ -43,6 +43,9 @@ const theme = createTheme({
   props: {
     MuiButton: {
       disableElevation: true
+    },
+    MuiTextField: {
+      variant: 'filled'
     }
   },
   overrides: {
