@@ -2,9 +2,12 @@ import { FC, useEffect, useState } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { FullProductType } from 'types/fullProduct'
 import styles from './properties.module.css'
-import { Cancel, LocalShipping } from '@material-ui/icons'
 import Attribute from 'components/productPage/attribute'
+import Price from 'components/productPage/price'
 import Shipping from 'components/productPage/shipping'
+import { ShippingOptionType } from 'types/shipping'
+import { mockShippingOptions } from 'mock'
+import ShippingButton from './shippingButton'
 
 interface PropertiesProps extends FullProductType {}
 
@@ -15,6 +18,8 @@ interface Selected {
 const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
   const [selected, setSelected] = useState<Selected>({})
   const [shippingActive, setShippingActive] = useState(false)
+  const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>([])
+  const [shippingType, setShippingType] = useState<string | undefined>()
 
   const getInitialSelected = () => {
     const selected: Selected = {}
@@ -33,6 +38,15 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
     setSelected(newSelected)
   }
 
+  const fetchShipping = (cep: string) => {
+    setTimeout(() => setShippingOptions(mockShippingOptions), 500)
+  }
+
+  const handleChooseShipping = (type: string) => {
+    setShippingType(type)
+    setShippingActive(false)
+  }
+
   useEffect(() => {
     setSelected(getInitialSelected())
   }, [])
@@ -40,9 +54,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
   return (
     <>
       <div>
-        <Typography variant='h1'>
-          {name}
-        </Typography>
+        <Typography variant='h1'>{name}</Typography>
         <div className={styles.attributes}>
           {attributes.map(attribute => (
             <Attribute
@@ -55,32 +67,28 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
         </div>
       </div>
       <div className={styles.footer}>
-        <div className={styles.price}>
-          <Typography variant='h2' component='span'>
-            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
-          </Typography>
-          <Typography variant='h4'>
-            em até <b>12x</b> de <b>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price / 12)}</b>
-          </Typography>
-        </div>
+        <Price value={price} />
         <div className={styles.actions}>
           <div className={styles['left-button']}>
-            <Button
-              color='primary'
-              variant='outlined'
-              startIcon={shippingActive ? <Cancel /> : <LocalShipping />}
-              fullWidth
+            <ShippingButton
+              active={shippingActive}
               onClick={() => setShippingActive(!shippingActive)}
-            >
-              CALCULAR FRETE
-            </Button>
+              options={shippingOptions}
+              shippingType={shippingType}
+            />
           </div>
           <div className={styles['right-button']}>
             <Button color='primary' variant='contained' disableElevation fullWidth>
               COMPRAR
             </Button>
           </div>
-          <Shipping active={shippingActive} />
+          <Shipping
+            active={shippingActive}
+            onFillCep={cep => fetchShipping(cep)}
+            options={shippingOptions}
+            shippingType={shippingType}
+            onChooseShippingType={handleChooseShipping}
+          />
         </div>
       </div>
     </>
