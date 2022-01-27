@@ -11,11 +11,10 @@ interface ShippingProps {
   active: boolean
   onFillCep: (cep: string) => void
   options: ShippingOptionType[]
-  shippingType: string | undefined
   onChooseShippingType: (type: string) => void
 }
 
-const Shipping: FC<ShippingProps> = ({ active, onFillCep, options, shippingType, onChooseShippingType }) => {
+const Shipping: FC<ShippingProps> = ({ active, onFillCep, options, onChooseShippingType }) => {
   const [cep, setCep] = useState('')
   const [loading, setLoading] = useState(false)
 

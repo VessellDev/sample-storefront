@@ -39,7 +39,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, attributes }) => {
   }
 
   const fetchShipping = (cep: string) => {
-    setTimeout(() => setShippingOptions(mockShippingOptions), 500)
+    setTimeout(() => setShippingOptions([...mockShippingOptions]), 500)
   }
 
   const handleChooseShipping = (type: string) => {

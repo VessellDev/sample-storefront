@@ -33,17 +33,19 @@ const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shi
   }
 
   return (
-    <Button
-      color='primary'
-      variant='outlined'
-      startIcon={active ? <Cancel /> : <LocalShipping />}
-      fullWidth
-      onClick={onClick}
-    >
-      <div className={styles.label}>
-        {getShippingLabel()}
-      </div>
-    </Button>
+    <div className={styles.button}>
+      <Button
+        color='primary'
+        variant='outlined'
+        startIcon={active ? <Cancel /> : <LocalShipping />}
+        fullWidth
+        onClick={onClick}
+      >
+        <div className={styles.label}>
+          {getShippingLabel()}
+        </div>
+      </Button>
+    </div>
   )
 }
 
