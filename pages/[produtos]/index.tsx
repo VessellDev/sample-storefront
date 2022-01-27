@@ -16,6 +16,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSideP
     category.slug === ctx.query.produtos
   ))
 
+  if (!category) return { notFound: true }
+
   return {
     props: { category }
   }

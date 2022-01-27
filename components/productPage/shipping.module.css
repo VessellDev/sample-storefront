@@ -1,0 +1,22 @@
+.shipping {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  transform: translate(0, -100%);
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid black;
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+}
+.shipping.active {
+  top: -16px;
+  opacity: 1;
+}
+
+.options {
+  padding-top: 16px;
+}

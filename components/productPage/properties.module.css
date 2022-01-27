@@ -9,6 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
 }
 
 .left-button {
@@ -31,11 +32,6 @@
 
   .left-button {
     width: 100%;
-  }
-
-  .price {
-    padding-bottom: 16px;
-    text-align: right;
   }
 }
 
