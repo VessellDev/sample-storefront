@@ -1,7 +1,3 @@
-.button {
-  min-width: 256px;
-}
-
 .label {
   width: 100%;
   display: flex;
@@ -9,6 +5,12 @@
   justify-content: space-between;
 }
 
+.price-wrapper {
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
 .price {
+  width: 100%;
   padding-left: 16px;
+  text-align: right;
 }
