@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { Button, Typography } from '@material-ui/core'
 import { ShippingOptionType } from 'types/shipping'
 import { Cancel, LocalShipping } from '@material-ui/icons'
@@ -12,25 +12,30 @@ interface ShippingButtonProps {
 }
 
 const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shippingType }) => {
+  const [maxWidth, setMaxWidth] = useState(0)
+  const priceEl = useRef<HTMLSpanElement>(null)
   
-  const getShippingLabel = () => {
+  const getButtonContent = (): [string, number?] => {
     if (shippingType) {
-      const option = options.find(option => option.type === shippingType)
-      if (!option) return
-
-      return <>
-        {option.label}&nbsp;
-        <Typography variant='h4' color='secondary' className={styles.price}>
-        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(option.price)}
-        </Typography>
-      </>
+      const option = options.find(option => option.type === shippingType) as ShippingOptionType
+      return [option.label, option.price]
     }
     if (options.length > 0) {
-      return 'ESCOLHER FRETE'
+      return ['ESCOLHER FRETE']
     }
 
-    return 'CALCULAR FRETE'
+    return ['CALCULAR FRETE']
   }
+
+  const [label, price] = getButtonContent()
+
+  useEffect(() => {
+    if (!priceEl.current) return
+    console.log(price)
+    if (price !== undefined) return setMaxWidth(priceEl.current.getBoundingClientRect().width * 1.6)
+
+    setMaxWidth(0)
+  }, [price])
 
   return (
     <div className={styles.button}>
@@ -42,7 +47,14 @@ const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shi
         onClick={onClick}
       >
         <div className={styles.label}>
-          {getShippingLabel()}
+          {label}
+          <div className={styles['price-wrapper']} style={{ maxWidth }}>
+            <Typography variant='h4' color='secondary' className={styles.price}>
+              <span ref={priceEl}>
+                {price && new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
+              </span>
+            </Typography>
+          </div>
         </div>
       </Button>
     </div>
