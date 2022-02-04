@@ -18,7 +18,7 @@ const Product: FC<ProductProps> = ({ slug, image, name, price }) => (
           {name}
         </Typography>
         <Typography variant='subtitle1'>
-          R$ {price.toFixed(2)}
+          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
         </Typography>
       </div>
     </div>

@@ -1,0 +1,19 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border-radius: 0 0 0 24px;
+  overflow: hidden;
+}
+
+.cart {
+  width: 480px;
+  padding-top: 76px;
+  background-color: white;
+  border-radius: 0 0 0 24px;
+  border: 2px solid var(--light);
+  transition: all 0.3s ease-in-out;
+}
+.cart.scrolling {
+  padding-top: 44px;
+}

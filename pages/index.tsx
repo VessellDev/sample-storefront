@@ -1,4 +1,4 @@
-import Cart from 'components/cart'
+import Cart from 'components/cart/cart'
 import Highlight from 'components/highlight'
 import Logo from 'components/logo'
 import Selection from 'components/selection'
