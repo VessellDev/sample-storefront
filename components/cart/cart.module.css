@@ -17,3 +17,15 @@
 .cart.scrolling {
   padding-top: 44px;
 }
+
+.footer {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  transform: translate(0, calc(100% + 24px));
+  transition: all 0.3s ease-in-out;
+}
+.footer.active {
+  transform: translate(0, 0);
+}

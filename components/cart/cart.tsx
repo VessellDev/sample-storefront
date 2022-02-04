@@ -1,4 +1,4 @@
-import { Collapse, IconButton } from '@material-ui/core'
+import { Badge, Button, Collapse, IconButton } from '@material-ui/core'
 import { ShoppingCartOutlined } from '@material-ui/icons'
 import classnames from 'classnames'
 import { mockProducts } from 'mock'
@@ -12,6 +12,7 @@ const Cart: FC = () => {
   const { scroll } = useLocomotiveScroll()
   const [scrollY, setScrollY] = useState(0)
   const scrolling = scrollY > 0
+  const products = mockProducts.slice(0, 2)
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {
@@ -27,14 +28,31 @@ const Cart: FC = () => {
             [styles.active]: active,
             [styles.scrolling]: scrolling
           })}>
-            {mockProducts.slice(0, 2).map(product => (
-              <CartItem key={product.id} {...product} />
-            ))}
+            <div>
+              {products.map((product, index) => (
+                <CartItem
+                  key={product.id}
+                  {...product}
+                  active={active}
+                  index={index}
+                />
+              ))}
+            </div>
+            <div
+              style={{ transitionDelay: `${products.length * 0.05}s` }}
+              className={classnames(styles.footer, { [styles.active]: active })}
+            >
+              <Button color='primary' variant='contained' disableElevation>
+                FINALIZAR COMPRA
+              </Button>
+            </div>
           </div>
         </Collapse>
       </div>
       <IconButton color='primary' onClick={() => setActive(!active)}>
-        <ShoppingCartOutlined />
+        <Badge badgeContent={products.length} color='error'>
+          <ShoppingCartOutlined />
+        </Badge>
       </IconButton>
     </div>
   )

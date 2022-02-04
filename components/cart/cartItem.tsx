@@ -1,15 +1,21 @@
 import { IconButton, Typography } from '@material-ui/core'
 import { AddCircle, RemoveCircle } from '@material-ui/icons'
+import classnames from 'classnames'
 import { FC, useCallback, useState } from 'react'
 import { ProductType } from 'types/product'
 import styles from './cartItem.module.css'
 
-interface CartItemProps extends ProductType {}
+interface CartItemProps extends ProductType {
+  active: boolean
+  index: number
+}
 
 const CartItem: FC<CartItemProps> = ({
   image,
   name,
-  price
+  price,
+  active,
+  index
 }) => {
   const [amount, setAmount] = useState(0)
 
@@ -22,7 +28,10 @@ const CartItem: FC<CartItemProps> = ({
   }, [amount])
 
   return (
-    <div className={styles.item}>
+    <div
+      style={{ transitionDelay: `${index * 0.05}s` }}
+      className={classnames(styles.item, { [styles.active]: active })}
+    >
       <div
         className={styles.image}
         style={{ backgroundImage: `url(${image})` }}
