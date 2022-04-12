@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {
-      setScrollY(args.delta.y)
+      args.delta && setScrollY(args.delta.y)
     })
   }, [scroll])
 

@@ -12,11 +12,11 @@ const Cart: FC = () => {
   const { scroll } = useLocomotiveScroll()
   const [scrollY, setScrollY] = useState(0)
   const scrolling = scrollY > 0
-  const products = mockProducts.slice(0, 2)
+  const products = mockProducts.slice(0, 4)
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {
-      setScrollY(args.delta.y)
+      setScrollY(args.delta?.y)
     })
   }, [scroll])
 
@@ -42,7 +42,7 @@ const Cart: FC = () => {
               style={{ transitionDelay: `${products.length * 0.05}s` }}
               className={classnames(styles.footer, { [styles.active]: active })}
             >
-              <Button color='primary' variant='contained' disableElevation>
+              <Button className={styles.button} color='primary' variant='contained' disableElevation>
                 FINALIZAR COMPRA
               </Button>
             </div>

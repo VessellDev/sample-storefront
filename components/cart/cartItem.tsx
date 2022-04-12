@@ -32,17 +32,19 @@ const CartItem: FC<CartItemProps> = ({
       style={{ transitionDelay: `${index * 0.05}s` }}
       className={classnames(styles.item, { [styles.active]: active })}
     >
-      <div
-        className={styles.image}
-        style={{ backgroundImage: `url(${image})` }}
-      />
-      <div className={styles.content}>
-        <Typography variant='h4' color='secondary'>
-          {name}
-        </Typography>
-        <Typography variant='subtitle1'>
-          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
-        </Typography>
+      <div className={styles.info}>
+        <div
+          className={styles.image}
+          style={{ backgroundImage: `url(${image})` }}
+        />
+        <div className={styles.content}>
+          <Typography variant='h4' color='secondary'>
+            {name}
+          </Typography>
+          <Typography variant='subtitle1'>
+            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
+          </Typography>
+        </div>
       </div>
       <div className={styles.actions}>
         <IconButton color='primary' onClick={handleRemove}>
