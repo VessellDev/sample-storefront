@@ -1,4 +1,4 @@
-import Cart from 'components/cart'
+import Cart from 'components/cart/cart'
 import Highlight from 'components/highlight'
 import Logo from 'components/logo'
 import Selection from 'components/selection'
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {
-      setScrollY(args.delta.y)
+      args.delta && setScrollY(args.delta.y)
     })
   }, [scroll])
 

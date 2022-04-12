@@ -1,0 +1,46 @@
+.wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border-radius: 0 0 0 24px;
+  overflow: hidden;
+}
+
+.cart {
+  width: 480px;
+  max-width: 100vw;
+  padding-top: 76px;
+  background-color: white;
+  border-radius: 0 0 0 24px;
+  border: 2px solid var(--light);
+  transition: padding-top 0.3s ease-in-out;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+.cart::-webkit-scrollbar {
+  display: none;
+}
+.cart.scrolling {
+  padding-top: 44px;
+}
+
+.footer {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  transform: translate(0, calc(100% + 24px));
+  transition: all 0.3s ease-in-out;
+}
+.footer.active {
+  transform: translate(0, 0);
+}
+
+@media only screen and (max-width: 480px) {
+  .wrapper, .cart {
+    border-radius: 0;
+  }
+  .button {
+    width: 100%;
+  }
+}

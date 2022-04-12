@@ -1,6 +1,6 @@
 import classnames from 'classnames'
 import Breadcrumbs from 'components/breadcrumbs'
-import Cart from 'components/cart'
+import Cart from 'components/cart/cart'
 import Logo from 'components/logo'
 import { mockFullProduct } from 'mock'
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
