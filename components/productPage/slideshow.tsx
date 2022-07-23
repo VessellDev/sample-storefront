@@ -6,7 +6,7 @@ interface SlideshowProps {
 }
 
 const Slideshow: FC<SlideshowProps> = ({ image }) => (
-  <Image src={image || ""} layout="fill" objectFit="contain" />
+  <Image src={image || ""} layout="fill" objectFit="contain" alt="Main Image" />
 )
 
 export default Slideshow

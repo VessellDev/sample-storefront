@@ -26,6 +26,7 @@ const Product: FC<ProductProps> = ({ id, slug, mainImage, name, price }) => {
     <Link
       // href={`/produtos/${slug}`}
       href={getLinkWithQuery(`/produtos/${id}`)}
+      passHref
     >
       <div className={styles.product}>
         <div

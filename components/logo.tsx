@@ -19,6 +19,7 @@ const Logo: FC<LogoProps> = ({ className }) => {
           src="/images/logo.svg"
           width={100}
           height={26}
+          alt="Logo"
         />
       </a>
     </Link>
