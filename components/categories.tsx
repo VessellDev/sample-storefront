@@ -22,7 +22,7 @@ const Categories: FC<CategoriesProps> = ({ categories }) => {
       </Typography>
       <div className={styles.list}>
         {categories.map((category) => (
-          <Link href={getLinkWithQuery(`/${category.slug}`)} passHref>
+          <Link href={getLinkWithQuery(`/${category.slug}`)} passHref key={category.id}>
             <a>
               <Typography variant="body1" className={styles.category}>
                 {category.name}
