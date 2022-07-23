@@ -72,6 +72,8 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
+  SDK.setProjectCode(ctx.query.projectCode as string)
+
   const product = await SDK.product([
     {
       id: ctx.query.produto as string,

@@ -64,6 +64,7 @@ const Products: NextPage<ProductsProps> = ({ products, category }) => {
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
+  SDK.setProjectCode(ctx.query.projectCode as string)
   const slug = ctx.query.produtos as string
 
   const products = await SDK.productSearch([

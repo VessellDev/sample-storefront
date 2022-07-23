@@ -79,6 +79,8 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
 export const getServerSideProps: GetServerSideProps = async (
   ctx: GetServerSidePropsContext
 ) => {
+  SDK.setProjectCode(ctx.query.projectCode as string)
+
   const products = await SDK.productSearch([
     {
       paging: { limit: 4 },
