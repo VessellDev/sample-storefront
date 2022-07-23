@@ -1,0 +1,19 @@
+.categories {
+  padding: 32px;
+}
+
+.title {
+  padding-bottom: 24px;
+}
+
+.list {
+  display: flex;
+  gap: 16px;
+}
+
+.category {
+  padding: 16px;
+}
+.category:hover {
+  text-decoration: underline;
+}

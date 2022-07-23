@@ -1,21 +1,21 @@
-import { Typography } from "@material-ui/core";
-import { FC } from "react";
-import { ProductType } from "types/product";
-import styles from "./product.module.css";
-import Link from "next/link";
+import { Typography } from "@material-ui/core"
+import { FC } from "react"
+import { ProductType } from "types/product"
+import styles from "./product.module.css"
+import Link from "next/link"
 
 export interface ProductProps {
-  id: string;
-  name: string;
-  slug: string;
+  id: string
+  name: string
+  slug: string
   mainImage?: {
     asset: {
-      url: string;
-    };
-  };
+      url: string
+    }
+  }
   price?: {
-    minPrice: number;
-  };
+    minPrice: number
+  }
 }
 
 const Product: FC<ProductProps> = ({ slug, mainImage, name, price }) => (
@@ -38,6 +38,6 @@ const Product: FC<ProductProps> = ({ slug, mainImage, name, price }) => (
       </div>
     </div>
   </Link>
-);
+)
 
-export default Product;
+export default Product
