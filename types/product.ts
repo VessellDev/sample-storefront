@@ -1,7 +1,15 @@
 export interface ProductType {
-  id: number
-  slug: string
-  image: string
-  name: string
-  price: number
+  id: number;
+  name: string;
+  slug: string;
+  images: [
+    {
+      asset: {
+        url: string;
+      };
+    }
+  ];
+  price: {
+    minPrice: number;
+  };
 }

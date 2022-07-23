@@ -10,16 +10,69 @@ import { CategoryType } from 'types/category'
 import classNames from 'classnames'
 import { useEffect, useState } from 'react'
 import { useLocomotiveScroll } from 'react-locomotive-scroll'
+import VessellSDK from 'sdk'
 
 export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  const category = mockCategories.find(category => (
-    category.slug === ctx.query.produtos
-  ))
-
-  if (!category) return { notFound: true }
-
-  return {
-    props: { category }
+  try {
+    const products = await VessellSDK.productSearch([{
+      
+    }, {
+      activeFilter: {
+        attributeOptions: true,
+        categories: true
+      },
+      filterableAttributes: {
+        attributeId: true,
+        attributeName: true,
+        attributeType: true,
+        options: {
+          quantity: true,
+          attributeOption: {
+            "...on ProductAttributeOptionColor": {
+              color: true,
+              name: true
+            },
+            "...on ProductAttributeOptionImage": {
+              name: true
+            },
+            "...on ProductAttributeOptionText": {
+              name: true
+            }
+          } 
+        }
+      },
+      filterableCategories: {
+        category: {
+          id: true,
+          name: true
+        },
+        quantity: true
+      },
+      items: {
+        edges: {
+          node: {
+            name: true,
+            price: {
+              minPrice: true
+            }
+          }
+        }
+      }
+    }])
+  
+    console.dir(products, { depth: null })
+  
+    const category = mockCategories.find(category => (
+      category.slug === ctx.query.produtos
+    ))
+  
+    if (!category) return { notFound: true }
+  
+    return {
+      props: { category }
+    }
+  } catch (err) {
+    console.dir(err, { depth: null })
   }
 }
 
