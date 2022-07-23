@@ -18,8 +18,11 @@ export interface ProductProps {
   }
 }
 
-const Product: FC<ProductProps> = ({ slug, mainImage, name, price }) => (
-  <Link href={`/produtos/${slug}`}>
+const Product: FC<ProductProps> = ({ id, slug, mainImage, name, price }) => (
+  <Link
+    // href={`/produtos/${slug}`}
+    href={`/produtos/${id}`}
+  >
     <div className={styles.product}>
       <div
         style={{ backgroundImage: `url(${mainImage?.asset.url})` }}
