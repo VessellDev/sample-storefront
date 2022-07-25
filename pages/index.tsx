@@ -60,7 +60,7 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK((SDK) => async () => {
+export const getServerSideProps = getServerSidePropsWithSDK<HomeProps>((SDK) => async () => {
   const products = await SDK.productSearch([
     {
       paging: { limit: 4 },

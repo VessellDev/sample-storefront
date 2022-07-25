@@ -1,15 +1,15 @@
+import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
 import classnames from "classnames"
 import Breadcrumbs from "components/breadcrumbs"
 import Cart from "components/cart/cart"
 import Logo from "components/logo"
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next"
+import Properties from "components/productPage/properties"
+import Slideshow from "components/productPage/slideshow"
+import { GetServerSidePropsContext, NextPage } from "next"
+import { getServerSidePropsWithSDK } from "props-with-sdk"
 import { useEffect, useState } from "react"
 import { useLocomotiveScroll } from "react-locomotive-scroll"
 import styles from "./produto.module.css"
-import Slideshow from "components/productPage/slideshow"
-import Properties from "components/productPage/properties"
-import SDK from "sdk"
-import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
 
 interface ProductProps {
   product: GraphQLTypes["Product"]
@@ -69,14 +69,10 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
-  SDK.setProjectCode(ctx.query.projectCode as string)
-
+export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>((SDK) => async (context) => {
   const product = await SDK.product([
     {
-      id: ctx.query.produto as string,
+      id: context.query.produto as string,
     },
     {
       id: true,
@@ -100,6 +96,10 @@ export const getServerSideProps: GetServerSideProps = async (
     },
   ])
 
+  if (!product) {
+    return { notFound: true }
+  }
+
   const category = await SDK.productCategory([
     {
       id: product?.categories[0].id as string,
@@ -110,12 +110,16 @@ export const getServerSideProps: GetServerSideProps = async (
     },
   ])
 
+  if (!category) {
+    return { notFound: true }
+  }
+
   return {
     props: {
       product,
-      category,
+      category
     },
   }
-}
+})
 
 export default Product
