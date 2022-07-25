@@ -4,9 +4,6 @@ module.exports = {
   images: {
     domains: ['api.vessell.com.br']
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   experimental: {
     outputStandalone: true
   }
