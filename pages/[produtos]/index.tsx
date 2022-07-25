@@ -1,15 +1,14 @@
-import { GetServerSideProps, GetServerSidePropsContext, NextPage } from "next"
-import styles from "./produtos.module.css"
-import Product from "components/product"
-import Filters from "components/filters"
-import Logo from "components/logo"
-import Cart from "components/cart/cart"
-import Breadcrumbs from "components/breadcrumbs"
+import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
 import classNames from "classnames"
+import Breadcrumbs from "components/breadcrumbs"
+import Cart from "components/cart/cart"
+import Logo from "components/logo"
+import Product from "components/product"
+import { NextPage } from "next"
+import { getServerSidePropsWithSDK } from "props-with-sdk"
 import { useEffect, useState } from "react"
 import { useLocomotiveScroll } from "react-locomotive-scroll"
-import SDK from "sdk"
-import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
+import styles from "./produtos.module.css"
 
 interface ProductsProps {
   products: GraphQLTypes["ProductSearchResult"]["items"]["nodes"]
@@ -61,11 +60,8 @@ const Products: NextPage<ProductsProps> = ({ products, category }) => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
-  SDK.setProjectCode(ctx.query.projectCode as string)
-  const slug = ctx.query.produtos as string
+export const getServerSideProps = getServerSidePropsWithSDK<ProductsProps>((SDK) => async (context) => {
+  const slug = context.query.produtos as string
 
   const products = await SDK.productSearch([
     {
@@ -114,6 +110,6 @@ export const getServerSideProps: GetServerSideProps = async (
       category: categories.nodes[0],
     },
   }
-}
+})
 
 export default Products
