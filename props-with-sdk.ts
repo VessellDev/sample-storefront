@@ -7,7 +7,12 @@ export const getServerSidePropsWithSDK = <P>(handler: (SDK: SDKType) => GetServe
     const { projectCode } = context.query
 
     if (!projectCode) {
-      return { notFound: true }
+      return {
+        redirect: {
+          destination: '/project-not-found',
+          permanent: false
+        }
+      }
     }
 
     SDK.setProjectCode(projectCode as string)
