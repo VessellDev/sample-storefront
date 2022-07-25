@@ -1,22 +1,17 @@
-import { IconButton, Typography } from '@material-ui/core'
-import { AddCircle, RemoveCircle } from '@material-ui/icons'
-import classnames from 'classnames'
-import { FC, useCallback, useState } from 'react'
-import { ProductType } from 'types/product'
-import styles from './cartItem.module.css'
+import { IconButton, Typography } from "@material-ui/core"
+import { AddCircle, RemoveCircle } from "@material-ui/icons"
+import classnames from "classnames"
+import { FC, useCallback, useState } from "react"
+import { ProductType } from "types/product"
+import styles from "./cartItem.module.css"
 
-interface CartItemProps extends ProductType {
-  active: boolean
-  index: number
-}
+// interface CartItemProps extends ProductType {
+//   active: boolean
+//   index: number
+//   image: string
+// }
 
-const CartItem: FC<CartItemProps> = ({
-  image,
-  name,
-  price,
-  active,
-  index
-}) => {
+const CartItem: FC<any> = ({ image, name, price, active, index }) => {
   const [amount, setAmount] = useState(0)
 
   const handleRemove = useCallback(() => {
@@ -38,20 +33,23 @@ const CartItem: FC<CartItemProps> = ({
           style={{ backgroundImage: `url(${image})` }}
         />
         <div className={styles.content}>
-          <Typography variant='h4' color='secondary'>
+          <Typography variant="h4" color="secondary">
             {name}
           </Typography>
-          <Typography variant='subtitle1'>
-            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
+          <Typography variant="subtitle1">
+            {new Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            }).format(price)}
           </Typography>
         </div>
       </div>
       <div className={styles.actions}>
-        <IconButton color='primary' onClick={handleRemove}>
+        <IconButton color="primary" onClick={handleRemove}>
           <RemoveCircle />
         </IconButton>
         <span className={styles.amount}>{amount}</span>
-        <IconButton color='primary' onClick={handleAdd}>
+        <IconButton color="primary" onClick={handleAdd}>
           <AddCircle />
         </IconButton>
       </div>

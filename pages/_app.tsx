@@ -1,8 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import ThemeProvider from '@material-ui/styles/ThemeProvider'
 import theme from 'theme'
-import { CssBaseline } from '@material-ui/core'
+import { CssBaseline, ThemeProvider } from '@material-ui/core'
 import { useEffect, useRef } from 'react'
 import { LocomotiveScrollProvider } from 'react-locomotive-scroll'
 import { useRouter } from 'next/router'
@@ -28,6 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           onLocationChange={(scroll: any) => {
             scroll.scrollTo(0, { duration: 0, disableLerp: true })
           }}
+          watch={[asPath]}
         >
           <main data-scroll-container ref={containerRef}>
             <Component {...pageProps} />
