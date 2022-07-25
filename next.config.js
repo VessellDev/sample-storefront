@@ -4,7 +4,5 @@ module.exports = {
   images: {
     domains: ['api.vessell.com.br']
   },
-  experimental: {
-    outputStandalone: true
-  }
+  output: "standalone"
 }
