@@ -40,45 +40,53 @@ const theme = createTheme({
       textTransform: 'uppercase',
     },
   },
-  props: {
+  components: {
     MuiButton: {
-      disableElevation: true,
+      defaultProps: {
+        disableElevation: true,
+      },
+      styleOverrides: {
+        contained: {
+          padding: '16px 32px',
+          fontWeight: 800,
+          borderRadius: 16,
+        },
+        outlined: {
+          padding: '16px 32px',
+          fontWeight: 800,
+          borderRadius: 16,
+        },
+        text: {
+          fontWeight: 800,
+        },
+      },
     },
     MuiTextField: {
-      variant: 'filled',
-    },
-  },
-  overrides: {
-    MuiButton: {
-      contained: {
-        padding: '16px 32px',
-        fontWeight: 800,
-        borderRadius: 16,
-      },
-      outlined: {
-        padding: '16px 32px',
-        fontWeight: 800,
-        borderRadius: 16,
-      },
-      text: {
-        fontWeight: 800,
+      defaultProps: {
+        variant: 'filled',
       },
     },
     MuiSelect: {
-      root: {
-        paddingTop: 0,
+      styleOverrides: {
+        filled: {
+          paddingTop: 0,
+        },
       },
     },
     MuiInputLabel: {
-      root: {
-        fontWeight: 900,
-        textTransform: 'uppercase',
-        color: grey[900],
+      styleOverrides: {
+        root: {
+          fontWeight: 900,
+          textTransform: 'uppercase',
+          color: grey[900],
+        },
       },
     },
     MuiBreadcrumbs: {
-      separator: {
-        display: 'none',
+      styleOverrides: {
+        separator: {
+          display: 'none',
+        },
       },
     },
   },

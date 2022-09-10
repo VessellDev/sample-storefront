@@ -8,6 +8,7 @@
   font-weight: 900;
   padding-right: 10px;
   cursor: pointer;
+  text-decoration: none;
 }
 .link svg {
   margin-right: 10px;
