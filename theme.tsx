@@ -1,87 +1,87 @@
-import { grey } from '@material-ui/core/colors'
-import { createTheme } from '@material-ui/core/styles'
+import { grey } from '@mui/material/colors'
+import { createTheme } from '@mui/material/styles'
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000000'
+      main: '#000000',
     },
     secondary: {
-      main: '#9CA3AF'
+      main: '#9CA3AF',
     },
     background: {
-      default: '#fff'
-    }
+      default: '#fff',
+    },
   },
   typography: {
     fontFamily: ['Manrope', 'sans-serif'].join(','),
     h1: {
       fontSize: 48,
-      fontWeight: 400
+      fontWeight: 400,
     },
     h2: {
       fontSize: 36,
-      fontWeight: 800
+      fontWeight: 800,
     },
     h3: {
-      fontSize: 24, 
-      fontWeight: 800
+      fontSize: 24,
+      fontWeight: 800,
     },
     h4: {
-      fontSize: 16
+      fontSize: 16,
     },
     subtitle1: {
       fontSize: 16,
-      fontWeight: 800
+      fontWeight: 800,
     },
     subtitle2: {
       fontSize: 12,
       fontWeight: 800,
-      textTransform: 'uppercase'
-    }
+      textTransform: 'uppercase',
+    },
   },
   props: {
     MuiButton: {
-      disableElevation: true
+      disableElevation: true,
     },
     MuiTextField: {
-      variant: 'filled'
-    }
+      variant: 'filled',
+    },
   },
   overrides: {
     MuiButton: {
       contained: {
         padding: '16px 32px',
         fontWeight: 800,
-        borderRadius: 16
+        borderRadius: 16,
       },
       outlined: {
         padding: '16px 32px',
         fontWeight: 800,
-        borderRadius: 16
+        borderRadius: 16,
       },
       text: {
-        fontWeight: 800
-      }
+        fontWeight: 800,
+      },
     },
     MuiSelect: {
       root: {
-        paddingTop: 0
-      }
+        paddingTop: 0,
+      },
     },
     MuiInputLabel: {
       root: {
         fontWeight: 900,
         textTransform: 'uppercase',
-        color: grey[900]
-      }
+        color: grey[900],
+      },
     },
     MuiBreadcrumbs: {
       separator: {
-        display: 'none'
-      }
-    }
-  }
+        display: 'none',
+      },
+    },
+  },
 })
 
 export default theme

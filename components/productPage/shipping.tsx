@@ -3,14 +3,14 @@ import {
   Collapse,
   TextField,
   Typography,
-} from "@material-ui/core"
-import classnames from "classnames"
-import { FC, useEffect, useState } from "react"
-import styles from "./shipping.module.css"
-import InputMask from "react-input-mask"
-import { ShippingOptionType } from "types/shipping"
-import moment from "moment"
-import ShippingOption from "./shippingOption"
+} from '@mui/material'
+import classnames from 'classnames'
+import { FC, useEffect, useState } from 'react'
+import styles from './shipping.module.css'
+import InputMask from 'react-input-mask'
+import { ShippingOptionType } from 'types/shipping'
+import moment from 'moment'
+import ShippingOption from './shippingOption'
 
 interface ShippingProps {
   active: boolean
@@ -25,14 +25,14 @@ const Shipping: FC<ShippingProps> = ({
   options,
   onChooseShippingType,
 }) => {
-  const [cep, setCep] = useState("")
+  const [cep, setCep] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const rawCep = cep.match(/\d/g)
     if (!rawCep || rawCep.length < 8) return
 
-    onFillCep(rawCep.join(""))
+    onFillCep(rawCep.join(''))
     setLoading(true)
   }, [cep, onFillCep])
 

@@ -1,23 +1,31 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
+import { CacheProvider, EmotionCache } from '@emotion/react'
 import theme from 'theme'
-import { CssBaseline, ThemeProvider } from '@material-ui/core'
-import { useEffect, useRef } from 'react'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { useRef } from 'react'
 import { LocomotiveScrollProvider } from 'react-locomotive-scroll'
 import { useRouter } from 'next/router'
 import 'locomotive-scroll/dist/locomotive-scroll.css'
+import createEmotionCache from 'createEmotionCache'
+import Head from 'next/head'
 
-function MyApp({ Component, pageProps }: AppProps) {
+const clientSideEmotionCache = createEmotionCache()
+
+interface MyAppProps extends AppProps {
+  emotionCache?: EmotionCache
+}
+
+function MyApp(props: MyAppProps) {
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
   const containerRef = useRef(null)
   const { asPath } = useRouter()
 
-  useEffect(() => {
-    const jssStyles = document.querySelector('#jss-server-side')
-    jssStyles?.parentElement?.removeChild(jssStyles)
-  }, [])
-
   return (
-    <>
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LocomotiveScrollProvider
@@ -34,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           </main>
         </LocomotiveScrollProvider>
       </ThemeProvider>
-    </>
+    </CacheProvider>
   )
 }
 export default MyApp

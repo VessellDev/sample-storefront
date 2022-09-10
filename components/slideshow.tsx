@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core"
-import { FC } from "react"
-import styles from "./slideshow.module.css"
+import { Typography } from '@mui/material'
+import { FC } from 'react'
+import styles from './slideshow.module.css'
 
 const Slideshow: FC = () => (
   <div className={styles.container}>

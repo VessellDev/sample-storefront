@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 import { FC } from 'react'
 import Product, { ProductProps } from './product'
 import styles from './selection.module.css'
@@ -11,11 +11,11 @@ interface SelectionProps {
 
 const Selection: FC<SelectionProps> = ({ title, className, products }) => (
   <div className={className}>
-    <Typography className={styles.title} variant='h2'>
+    <Typography className={styles.title} variant="h2">
       {title}
     </Typography>
     <div className={styles.list}>
-      {products.map(product => (
+      {products.map((product) => (
         <Product key={product.id} {...product} />
       ))}
     </div>

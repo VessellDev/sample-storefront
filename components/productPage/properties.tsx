@@ -1,13 +1,13 @@
-import { FC, useEffect, useState } from "react"
-import { Button, Typography } from "@material-ui/core"
-import { FullProductType } from "types/fullProduct"
-import styles from "./properties.module.css"
-import Attribute from "components/productPage/attribute"
-import Price from "components/productPage/price"
-import Shipping from "components/productPage/shipping"
-import { ShippingOptionType } from "types/shipping"
-import ShippingButton from "./shippingButton"
-import { mockShippingOptions } from "mock"
+import { FC, useEffect, useState } from 'react'
+import { Button, Typography } from '@mui/material'
+import { FullProductType } from 'types/fullProduct'
+import styles from './properties.module.css'
+import Attribute from 'components/productPage/attribute'
+import Price from 'components/productPage/price'
+import Shipping from 'components/productPage/shipping'
+import { ShippingOptionType } from 'types/shipping'
+import ShippingButton from './shippingButton'
+import { mockShippingOptions } from 'mock'
 
 interface PropertiesProps {
   id: string
@@ -32,7 +32,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
   const [selected, setSelected] = useState<Selected>({})
   const [shippingActive, setShippingActive] = useState(false)
   const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>(
-    []
+    [],
   )
   const [shippingType, setShippingType] = useState<string | undefined>()
 
@@ -87,7 +87,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
       <div className={styles.footer}>
         {price && <Price value={price.minPrice} />}
         <div className={styles.actions}>
-          <div className={styles["left-button"]}>
+          <div className={styles['left-button']}>
             <ShippingButton
               active={shippingActive}
               onClick={() => setShippingActive(!shippingActive)}
@@ -95,7 +95,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
               shippingType={shippingType}
             />
           </div>
-          <div className={styles["right-button"]}>
+          <div className={styles['right-button']}>
             <Button
               color="primary"
               variant="contained"
