@@ -1,9 +1,9 @@
-import { IconButton, Typography } from "@material-ui/core"
-import { AddCircle, RemoveCircle } from "@material-ui/icons"
-import classnames from "classnames"
-import { FC, useCallback, useState } from "react"
-import { ProductType } from "types/product"
-import styles from "./cartItem.module.css"
+import { IconButton, Typography } from '@mui/material'
+import { AddCircle, RemoveCircle } from '@mui/icons-material'
+import classnames from 'classnames'
+import { FC, useCallback, useState } from 'react'
+import { ProductType } from 'types/product'
+import styles from './cartItem.module.css'
 
 // interface CartItemProps extends ProductType {
 //   active: boolean
@@ -37,9 +37,9 @@ const CartItem: FC<any> = ({ image, name, price, active, index }) => {
             {name}
           </Typography>
           <Typography variant="subtitle1">
-            {new Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
             }).format(price)}
           </Typography>
         </div>

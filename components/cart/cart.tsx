@@ -1,5 +1,5 @@
-import { Badge, Button, Collapse, IconButton } from '@material-ui/core'
-import { ShoppingCartOutlined } from '@material-ui/icons'
+import { Badge, Button, Collapse, IconButton } from '@mui/material'
+import { ShoppingCartOutlined } from '@mui/icons-material'
 import classnames from 'classnames'
 import { mockProducts } from 'mock'
 import { FC, useEffect, useState } from 'react'
@@ -24,10 +24,12 @@ const Cart: FC = () => {
     <div>
       <div className={styles.wrapper}>
         <Collapse in={active}>
-          <div className={classnames(styles.cart, {
-            [styles.active]: active,
-            [styles.scrolling]: scrolling
-          })}>
+          <div
+            className={classnames(styles.cart, {
+              [styles.active]: active,
+              [styles.scrolling]: scrolling,
+            })}
+          >
             <div>
               {products.map((product, index) => (
                 <CartItem
@@ -42,15 +44,20 @@ const Cart: FC = () => {
               style={{ transitionDelay: `${products.length * 0.05}s` }}
               className={classnames(styles.footer, { [styles.active]: active })}
             >
-              <Button className={styles.button} color='primary' variant='contained' disableElevation>
+              <Button
+                className={styles.button}
+                color="primary"
+                variant="contained"
+                disableElevation
+              >
                 FINALIZAR COMPRA
               </Button>
             </div>
           </div>
         </Collapse>
       </div>
-      <IconButton color='primary' onClick={() => setActive(!active)}>
-        <Badge badgeContent={products.length} color='error'>
+      <IconButton color="primary" onClick={() => setActive(!active)}>
+        <Badge badgeContent={products.length} color="error">
           <ShoppingCartOutlined />
         </Badge>
       </IconButton>

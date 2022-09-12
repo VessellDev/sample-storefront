@@ -1,9 +1,9 @@
-import { Typography } from "@material-ui/core"
-import { FC } from "react"
-import { ProductType } from "types/product"
-import styles from "./product.module.css"
-import Link from "next/link"
-import { useProjectCode } from "hooks/projectCode"
+import { Typography } from '@mui/material'
+import { FC } from 'react'
+import { ProductType } from 'types/product'
+import styles from './product.module.css'
+import Link from 'next/link'
+import { useProjectCode } from 'hooks/projectCode'
 
 export interface ProductProps {
   id: string
@@ -38,9 +38,9 @@ const Product: FC<ProductProps> = ({ id, slug, mainImage, name, price }) => {
             {name}
           </Typography>
           <Typography variant="subtitle1">
-            {new Intl.NumberFormat("pt-BR", {
-              style: "currency",
-              currency: "BRL",
+            {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
             }).format(price ? price.minPrice : 0)}
           </Typography>
         </div>

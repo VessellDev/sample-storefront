@@ -1,12 +1,9 @@
-import { FC } from "react"
-import styles from "./breadcrumbs.module.css"
-import {
-  Breadcrumbs as MUIBreadcrumbs,
-  Link as MUILink,
-} from "@material-ui/core"
-import { KeyboardArrowRight } from "@material-ui/icons"
-import Link from "next/link"
-import { useProjectCode } from "hooks/projectCode"
+import { FC } from 'react'
+import styles from './breadcrumbs.module.css'
+import { Breadcrumbs as MUIBreadcrumbs, Link as MUILink } from '@mui/material'
+import { KeyboardArrowRight } from '@mui/icons-material'
+import Link from 'next/link'
+import { useProjectCode } from 'hooks/projectCode'
 
 interface Crumb {
   href: string

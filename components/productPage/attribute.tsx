@@ -1,23 +1,24 @@
-import { Avatar, Chip, Typography } from '@material-ui/core'
+import { Avatar, Chip, Typography } from '@mui/material'
 import { FC, useCallback } from 'react'
 import { AttributeType } from 'types/fullProduct'
 import styles from './attribute.module.css'
 
 interface AttributeProps extends AttributeType {
   selected?: number
-  setSelected: (id: number) => void 
+  setSelected: (id: number) => void
 }
 
-const Attribute: FC<AttributeProps> = ({ label, options, selected, setSelected }) => {  
-  const isSelected = useCallback((id: number) => (
-    selected === id
-  ), [selected])
+const Attribute: FC<AttributeProps> = ({
+  label,
+  options,
+  selected,
+  setSelected,
+}) => {
+  const isSelected = useCallback((id: number) => selected === id, [selected])
 
   return (
     <div className={styles.attribute}>
-      <Typography variant='subtitle2'>
-        {label}
-      </Typography>
+      <Typography variant="subtitle2">{label}</Typography>
       <div>
         {options.map(({ id, label, hex }) => (
           <Chip
@@ -29,12 +30,16 @@ const Attribute: FC<AttributeProps> = ({ label, options, selected, setSelected }
             label={label}
             clickable
             onClick={() => setSelected(id)}
-            avatar={hex ? (
-              <Avatar
-                className={styles.avatar}
-                style={{ backgroundColor: hex }}
-              > </Avatar>
-            ) : undefined }
+            avatar={
+              hex ? (
+                <Avatar
+                  className={styles.avatar}
+                  style={{ backgroundColor: hex }}
+                >
+                  {' '}
+                </Avatar>
+              ) : undefined
+            }
           />
         ))}
       </div>

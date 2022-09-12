@@ -1,8 +1,8 @@
-import { Typography } from "@material-ui/core"
-import { useProjectCode } from "hooks/projectCode"
-import Link from "next/link"
-import { FC } from "react"
-import styles from "./categories.module.css"
+import { Typography } from '@mui/material'
+import { useProjectCode } from 'hooks/projectCode'
+import Link from 'next/link'
+import { FC } from 'react'
+import styles from './categories.module.css'
 
 interface CategoriesProps {
   categories: {

@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
-import { Button, Typography } from '@material-ui/core'
+import { Button, Typography } from '@mui/material'
 import { ShippingOptionType } from 'types/shipping'
-import { Cancel, LocalShipping } from '@material-ui/icons'
+import { Cancel, LocalShipping } from '@mui/icons-material'
 import styles from './shippingButton.module.css'
 
 interface ShippingButtonProps {
@@ -11,13 +11,20 @@ interface ShippingButtonProps {
   shippingType: string | undefined
 }
 
-const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shippingType }) => {
+const ShippingButton: FC<ShippingButtonProps> = ({
+  active,
+  onClick,
+  options,
+  shippingType,
+}) => {
   const [maxWidth, setMaxWidth] = useState(0)
   const priceEl = useRef<HTMLSpanElement>(null)
-  
+
   const getButtonContent = (): [string, number?] => {
     if (shippingType) {
-      const option = options.find(option => option.type === shippingType) as ShippingOptionType
+      const option = options.find(
+        (option) => option.type === shippingType,
+      ) as ShippingOptionType
       return [option.label, option.price]
     }
     if (options.length > 0) {
@@ -32,7 +39,8 @@ const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shi
   useEffect(() => {
     if (!priceEl.current) return
     console.log(price)
-    if (price !== undefined) return setMaxWidth(priceEl.current.getBoundingClientRect().width * 1.6)
+    if (price !== undefined)
+      return setMaxWidth(priceEl.current.getBoundingClientRect().width * 1.6)
 
     setMaxWidth(0)
   }, [price])
@@ -40,8 +48,8 @@ const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shi
   return (
     <div className={styles.button}>
       <Button
-        color='primary'
-        variant='outlined'
+        color="primary"
+        variant="outlined"
         startIcon={active ? <Cancel /> : <LocalShipping />}
         fullWidth
         onClick={onClick}
@@ -49,9 +57,13 @@ const ShippingButton: FC<ShippingButtonProps> = ({ active, onClick, options, shi
         <div className={styles.label}>
           {label}
           <div className={styles['price-wrapper']} style={{ maxWidth }}>
-            <Typography variant='h4' color='secondary' className={styles.price}>
+            <Typography variant="h4" color="secondary" className={styles.price}>
               <span ref={priceEl}>
-                {price && new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price)}
+                {price &&
+                  new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(price)}
               </span>
             </Typography>
           </div>
