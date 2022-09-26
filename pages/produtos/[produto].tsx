@@ -1,55 +1,31 @@
-import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
-import classnames from "classnames"
-import Breadcrumbs from "components/breadcrumbs"
-import Cart from "components/cart/cart"
-import Logo from "components/logo"
-import Properties from "components/productPage/properties"
-import Slideshow from "components/productPage/slideshow"
-import { GetServerSidePropsContext, NextPage } from "next"
-import { getServerSidePropsWithSDK } from "props-with-sdk"
-import { useEffect, useState } from "react"
-import { useLocomotiveScroll } from "react-locomotive-scroll"
-import styles from "./produto.module.css"
+import { GraphQLTypes } from '@vessell/sdk/lib/zeus'
+import Breadcrumbs from 'components/breadcrumbs'
+import Cart from 'components/cart/cart'
+import Logo from 'components/logo'
+import Properties from 'components/productPage/properties'
+import Slideshow from 'components/productPage/slideshow'
+import { NextPage } from 'next'
+import { getServerSidePropsWithSDK } from 'props-with-sdk'
+import styles from './produto.module.css'
 
 interface ProductProps {
-  product: GraphQLTypes["Product"]
-  category: GraphQLTypes["ProductCategory"]
+  product: GraphQLTypes['Product']
 }
 
-const Product: NextPage<ProductProps> = ({ product, category }) => {
-  const { scroll } = useLocomotiveScroll()
-  const [scrollY, setScrollY] = useState(0)
-  const scrolling = scrollY > 0
-
-  useEffect(() => {
-    scroll?.on("scroll", (args: any) => {
-      setScrollY(args.delta.y)
-    })
-  }, [scroll])
+const Product: NextPage<ProductProps> = ({ product }) => {
+  const category = product.categories[0]
 
   return (
-    <div data-scroll-section id="container" className={styles.wrapper}>
-      <header
-        data-scroll
-        data-scroll-sticky
-        data-scroll-target="#container"
-        className={styles.header}
-      >
-        <div
-          className={classnames(styles.container, {
-            [styles.scrolling]: scrolling,
-          })}
-        >
+    <div className={styles.wrapper}>
+      <header className={styles.header}>
+        <div className={styles.container}>
           <div className={styles.left}>
             <Logo />
             <Breadcrumbs
               crumbs={[
-                {
-                  href: `/${category.slug}`,
-                  label: category.name,
-                },
+                category && { href: `/${category.slug}`, label: category.name },
                 { href: product.slug, label: product.name },
-              ]}
+              ].filter((b) => b)}
             />
           </div>
           <div className={styles.right}>
@@ -69,57 +45,25 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>((SDK) => async (context) => {
-  const product = await SDK.product([
-    {
-      id: context.query.produto as string,
-    },
-    {
-      id: true,
-      slug: true,
-      name: true,
-      mainImage: {
-        asset: {
-          url: true,
-        },
-      },
-      price: {
-        minPrice: true,
-      },
-      shortDescription: true,
-      categories: [
-        {},
+export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
+  (SDK) =>
+    async ({ query: { produto } }) => {
+      const product = await SDK.product([
+        { id: produto as string },
         {
           id: true,
+          slug: true,
+          name: true,
+          mainImage: { asset: { url: true } },
+          shortDescription: true,
+          inventoryItems: [{}, { id: true, price: true }],
+          categories: [{}, { id: true, name: true, slug: true }],
         },
-      ],
-    },
-  ])
+      ])
 
-  if (!product) {
-    return { notFound: true }
-  }
-
-  const category = await SDK.productCategory([
-    {
-      id: product?.categories[0].id as string,
+      if (!product) return { notFound: true }
+      return { props: { product } }
     },
-    {
-      name: true,
-      slug: true,
-    },
-  ])
-
-  if (!category) {
-    return { notFound: true }
-  }
-
-  return {
-    props: {
-      product,
-      category
-    },
-  }
-})
+)
 
 export default Product

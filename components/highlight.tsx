@@ -3,7 +3,7 @@ import { FC } from 'react'
 import styles from './highlight.module.css'
 import { ArrowForward } from '@mui/icons-material'
 import Link from 'next/link'
-import { useProjectCode } from 'hooks/projectCode'
+import { useProjectCode } from 'hooks/useProjectCode'
 
 interface HighlightProps {
   className: string

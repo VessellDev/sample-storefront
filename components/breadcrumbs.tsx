@@ -3,7 +3,7 @@ import styles from './breadcrumbs.module.css'
 import { Breadcrumbs as MUIBreadcrumbs, Link as MUILink } from '@mui/material'
 import { KeyboardArrowRight } from '@mui/icons-material'
 import Link from 'next/link'
-import { useProjectCode } from 'hooks/projectCode'
+import { useProjectCode } from 'hooks/useProjectCode'
 
 interface Crumb {
   href: string

@@ -1,63 +1,91 @@
-import { Badge, Button, Collapse, IconButton } from '@mui/material'
+import {
+  Badge,
+  Box,
+  Button,
+  Collapse,
+  IconButton,
+  Typography,
+} from '@mui/material'
 import { ShoppingCartOutlined } from '@mui/icons-material'
 import classnames from 'classnames'
-import { mockProducts } from 'mock'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import styles from './cart.module.css'
 import CartItem from 'components/cart/cartItem'
-import { useLocomotiveScroll } from 'react-locomotive-scroll'
+import { useQuery } from 'react-query'
+import SDK from 'sdk'
+import { usePurchase } from 'hooks/usePurchase'
+import { OrderItemSortFields, SortDirection } from '@vessell/sdk/lib/zeus'
 
 const Cart: FC = () => {
+  const { getPurchaseId } = usePurchase()
   const [active, setActive] = useState(false)
-  const { scroll } = useLocomotiveScroll()
-  const [scrollY, setScrollY] = useState(0)
-  const scrolling = scrollY > 0
-  const products = mockProducts.slice(0, 4)
 
-  useEffect(() => {
-    scroll?.on('scroll', (args: any) => {
-      setScrollY(args.delta?.y)
-    })
-  }, [scroll])
+  const { data } = useQuery(['purchase'], () => {
+    const purchaseId = getPurchaseId()
+
+    return SDK.activePurchase([
+      { purchaseId },
+      {
+        items: [
+          {
+            sorting: [
+              { field: OrderItemSortFields.id, direction: SortDirection.ASC },
+            ],
+          },
+          {
+            id: true,
+            price: true,
+            quantity: true,
+            inventoryItem: {
+              product: { name: true, mainImage: { asset: { url: true } } },
+            },
+          },
+        ],
+      },
+    ])
+  })
 
   return (
     <div>
       <div className={styles.wrapper}>
         <Collapse in={active}>
-          <div
-            className={classnames(styles.cart, {
-              [styles.active]: active,
-              [styles.scrolling]: scrolling,
-            })}
-          >
-            <div>
-              {products.map((product, index) => (
-                <CartItem
-                  key={product.id}
-                  {...product}
-                  active={active}
-                  index={index}
-                />
-              ))}
-            </div>
-            <div
-              style={{ transitionDelay: `${products.length * 0.05}s` }}
-              className={classnames(styles.footer, { [styles.active]: active })}
-            >
-              <Button
-                className={styles.button}
-                color="primary"
-                variant="contained"
-                disableElevation
-              >
-                FINALIZAR COMPRA
-              </Button>
-            </div>
+          <div className={styles.cart}>
+            {data && data.items && data.items.length > 0 && (
+              <>
+                <div>
+                  {data.items.map((item) => (
+                    <CartItem key={item.id} {...item} active={active} />
+                  ))}
+                </div>
+                <div
+                  className={classnames(styles.footer, {
+                    [styles.active]: active,
+                  })}
+                >
+                  <Button
+                    className={styles.button}
+                    color="primary"
+                    variant="contained"
+                    disableElevation
+                  >
+                    FINALIZAR COMPRA
+                  </Button>
+                </div>
+              </>
+            )}
+            {data && data.items && data.items.length === 0 && (
+              <Box px={6} pb={5}>
+                <Typography>Nenhum item adicionado ao carrinho</Typography>
+              </Box>
+            )}
           </div>
         </Collapse>
       </div>
       <IconButton color="primary" onClick={() => setActive(!active)}>
-        <Badge badgeContent={products.length} color="error">
+        <Badge
+          badgeContent={data?.items.reduce((acc, cur) => acc + cur.quantity, 0)}
+          color="error"
+        >
           <ShoppingCartOutlined />
         </Badge>
       </IconButton>

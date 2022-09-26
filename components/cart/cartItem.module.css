@@ -21,9 +21,11 @@
 .image {
   width: 128px;
   height: 96px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: bottom center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
 }
 
 .content {

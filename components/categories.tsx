@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import { useProjectCode } from 'hooks/projectCode'
+import { useProjectCode } from 'hooks/useProjectCode'
 import Link from 'next/link'
 import { FC } from 'react'
 import styles from './categories.module.css'

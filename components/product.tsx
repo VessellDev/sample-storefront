@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { ProductType } from 'types/product'
 import styles from './product.module.css'
 import Link from 'next/link'
-import { useProjectCode } from 'hooks/projectCode'
+import { useProjectCode } from 'hooks/useProjectCode'
 
 export interface ProductProps {
   id: string

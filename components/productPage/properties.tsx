@@ -1,13 +1,14 @@
-import { FC, useEffect, useState } from 'react'
-import { Button, Typography } from '@mui/material'
-import { FullProductType } from 'types/fullProduct'
+import { FC, useState } from 'react'
+import { Typography } from '@mui/material'
+// import { FullProductType } from 'types/fullProduct'
 import styles from './properties.module.css'
-import Attribute from 'components/productPage/attribute'
+// import Attribute from 'components/productPage/attribute'
 import Price from 'components/productPage/price'
 import Shipping from 'components/productPage/shipping'
 import { ShippingOptionType } from 'types/shipping'
 import ShippingButton from './shippingButton'
 import { mockShippingOptions } from 'mock'
+import PurchaseButton from './purchaseButton'
 
 interface PropertiesProps {
   id: string
@@ -19,17 +20,23 @@ interface PropertiesProps {
       url: string
     }
   }
-  price?: {
-    minPrice: number
-  }
+  inventoryItems?: {
+    id: string
+    price: number
+  }[]
 }
 
-interface Selected {
-  [key: number]: number
-}
+// interface Selected {
+//   [key: number]: number
+// }
 
-const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
-  const [selected, setSelected] = useState<Selected>({})
+const Properties: FC<PropertiesProps> = ({
+  name,
+  inventoryItems,
+  shortDescription,
+}) => {
+  const item = inventoryItems && inventoryItems[0]
+  // const [selected, setSelected] = useState<Selected>({})
   const [shippingActive, setShippingActive] = useState(false)
   const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>(
     [],
@@ -85,7 +92,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
         </div> */}
       </div>
       <div className={styles.footer}>
-        {price && <Price value={price.minPrice} />}
+        {item && <Price value={item.price} />}
         <div className={styles.actions}>
           <div className={styles['left-button']}>
             <ShippingButton
@@ -96,14 +103,7 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
             />
           </div>
           <div className={styles['right-button']}>
-            <Button
-              color="primary"
-              variant="contained"
-              disableElevation
-              fullWidth
-            >
-              COMPRAR
-            </Button>
+            {item && <PurchaseButton inventoryItemId={item.id} />}
           </div>
           <Shipping
             active={shippingActive}
