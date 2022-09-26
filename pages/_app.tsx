@@ -28,19 +28,19 @@ function MyApp(props: MyAppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <LocomotiveScrollProvider
+        {/* <LocomotiveScrollProvider
           options={{ smooth: true }}
           location={asPath}
           containerRef={containerRef}
           onLocationChange={(scroll: any) => {
             scroll.scrollTo(0, { duration: 0, disableLerp: true })
           }}
-          watch={[asPath]}
-        >
-          <main data-scroll-container ref={containerRef}>
-            <Component {...pageProps} />
-          </main>
-        </LocomotiveScrollProvider>
+          watch={[Component]}
+        > */}
+        <main data-scroll-container ref={containerRef}>
+          <Component {...pageProps} />
+        </main>
+        {/* </LocomotiveScrollProvider> */}
       </ThemeProvider>
     </CacheProvider>
   )

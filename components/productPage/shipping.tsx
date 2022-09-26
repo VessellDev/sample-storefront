@@ -1,15 +1,9 @@
-import {
-  CircularProgress,
-  Collapse,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { CircularProgress, Collapse, TextField } from '@mui/material'
 import classnames from 'classnames'
 import { FC, useEffect, useState } from 'react'
 import styles from './shipping.module.css'
 import InputMask from 'react-input-mask'
 import { ShippingOptionType } from 'types/shipping'
-import moment from 'moment'
 import ShippingOption from './shippingOption'
 
 interface ShippingProps {
