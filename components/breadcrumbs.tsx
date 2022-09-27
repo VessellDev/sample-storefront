@@ -19,14 +19,16 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({ crumbs }) => {
 
   return (
     <MUIBreadcrumbs className={styles.container} color="primary">
-      {crumbs.map((crumb) => (
-        <Link key={crumb.href} href={getLinkWithQuery(crumb.href)} passHref>
-          <MUILink color="inherit" className={styles.link}>
-            <KeyboardArrowRight fontSize="medium" />
-            {crumb.label}
-          </MUILink>
-        </Link>
-      ))}
+      {crumbs
+        .filter((c) => c)
+        .map((crumb) => (
+          <Link key={crumb.href} href={getLinkWithQuery(crumb.href)} passHref>
+            <MUILink color="inherit" className={styles.link}>
+              <KeyboardArrowRight fontSize="medium" />
+              {crumb.label}
+            </MUILink>
+          </Link>
+        ))}
     </MUIBreadcrumbs>
   )
 }

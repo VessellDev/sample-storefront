@@ -1,14 +1,15 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { Button, Typography } from '@mui/material'
-import { ShippingOptionType } from 'types/shipping'
 import { Cancel, LocalShipping } from '@mui/icons-material'
 import styles from './shippingButton.module.css'
+import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
+import { useShippingLabel } from 'hooks/useShippingLabel'
 
 interface ShippingButtonProps {
   active: boolean
   onClick: () => void
-  options: ShippingOptionType[]
-  shippingType: string | undefined
+  options: GraphQLTypes['CalculateShippingResult'][]
+  shippingType: ShippingClassification | undefined
 }
 
 const ShippingButton: FC<ShippingButtonProps> = ({
@@ -19,13 +20,15 @@ const ShippingButton: FC<ShippingButtonProps> = ({
 }) => {
   const [maxWidth, setMaxWidth] = useState(0)
   const priceEl = useRef<HTMLSpanElement>(null)
+  const { getLabel } = useShippingLabel()
 
   const getButtonContent = (): [string, number?] => {
     if (shippingType) {
       const option = options.find(
-        (option) => option.type === shippingType,
-      ) as ShippingOptionType
-      return [option.label, option.price]
+        (option) => option.classification === shippingType,
+      ) as GraphQLTypes['CalculateShippingResult']
+
+      return [getLabel(option.classification), option.price]
     }
     if (options.length > 0) {
       return ['ESCOLHER FRETE']
@@ -38,7 +41,6 @@ const ShippingButton: FC<ShippingButtonProps> = ({
 
   useEffect(() => {
     if (!priceEl.current) return
-    console.log(price)
     if (price !== undefined)
       return setMaxWidth(priceEl.current.getBoundingClientRect().width * 1.6)
 

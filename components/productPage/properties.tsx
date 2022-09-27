@@ -1,14 +1,13 @@
 import { FC, useState } from 'react'
 import { Typography } from '@mui/material'
-// import { FullProductType } from 'types/fullProduct'
 import styles from './properties.module.css'
-// import Attribute from 'components/productPage/attribute'
 import Price from 'components/productPage/price'
 import Shipping from 'components/productPage/shipping'
-import { ShippingOptionType } from 'types/shipping'
 import ShippingButton from './shippingButton'
-import { mockShippingOptions } from 'mock'
 import PurchaseButton from './purchaseButton'
+import { useQuery } from 'react-query'
+import SDK from 'sdk'
+import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
 
 interface PropertiesProps {
   id: string
@@ -26,52 +25,48 @@ interface PropertiesProps {
   }[]
 }
 
-// interface Selected {
-//   [key: number]: number
-// }
-
 const Properties: FC<PropertiesProps> = ({
   name,
   inventoryItems,
   shortDescription,
 }) => {
   const item = inventoryItems && inventoryItems[0]
-  // const [selected, setSelected] = useState<Selected>({})
+  const [cep, setCep] = useState<string>()
   const [shippingActive, setShippingActive] = useState(false)
-  const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>(
-    [],
+  const [shippingOptions, setShippingOptions] = useState<
+    GraphQLTypes['CalculateShippingResult'][]
+  >([])
+  const [shippingType, setShippingType] = useState<ShippingClassification>()
+
+  const {} = useQuery(
+    ['productShipping'],
+    () =>
+      SDK.calculateShipping([
+        {
+          input: {
+            items: [{ inventoryItemId: item?.id as string, quantity: 1 }],
+            postalCodeTo: cep as string,
+          },
+        },
+        {
+          classification: true,
+          maxDeliveryTime: true,
+          minDeliveryTime: true,
+          price: true,
+        },
+      ]),
+    {
+      enabled: Boolean(cep),
+      onSuccess: (data) => {
+        setShippingOptions(data || [])
+      },
+    },
   )
-  const [shippingType, setShippingType] = useState<string | undefined>()
 
-  // const getInitialSelected = () => {
-  //   const selected: Selected = {}
-
-  //   attributes.forEach(attribute => {
-  //     selected[attribute.id] = attribute.options[0].id
-  //   })
-
-  //   return selected
-  // }
-
-  // const setAttributeSelected = (attributeId: number, optionId: number) => {
-  //   const newSelected = { ...selected }
-  //   newSelected[attributeId] = optionId
-
-  //   setSelected(newSelected)
-  // }
-
-  const fetchShipping = (cep: string) => {
-    setTimeout(() => setShippingOptions([...mockShippingOptions]), 500)
-  }
-
-  const handleChooseShipping = (type: string) => {
+  const handleChooseShipping = (type: ShippingClassification) => {
     setShippingType(type)
     setShippingActive(false)
   }
-
-  // useEffect(() => {
-  //   setSelected(getInitialSelected())
-  // }, [])
 
   return (
     <>
@@ -80,16 +75,6 @@ const Properties: FC<PropertiesProps> = ({
         <Typography variant="body1" className={styles.description}>
           {shortDescription}
         </Typography>
-        {/* <div className={styles.attributes}>
-          {attributes.map(attribute => (
-            <Attribute
-              key={attribute.id}
-              {...attribute}
-              selected={selected[attribute.id]}
-              setSelected={(optionId: number) => setAttributeSelected(attribute.id, optionId)}
-            />
-          ))}
-        </div> */}
       </div>
       <div className={styles.footer}>
         {item && <Price value={item.price} />}
@@ -107,9 +92,8 @@ const Properties: FC<PropertiesProps> = ({
           </div>
           <Shipping
             active={shippingActive}
-            onFillCep={(cep) => fetchShipping(cep)}
+            onFillCep={setCep}
             options={shippingOptions}
-            // shippingType={shippingType}
             onChooseShippingType={handleChooseShipping}
           />
         </div>

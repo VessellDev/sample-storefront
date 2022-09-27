@@ -3,14 +3,14 @@ import classnames from 'classnames'
 import { FC, useEffect, useState } from 'react'
 import styles from './shipping.module.css'
 import InputMask from 'react-input-mask'
-import { ShippingOptionType } from 'types/shipping'
 import ShippingOption from './shippingOption'
+import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
 
 interface ShippingProps {
   active: boolean
   onFillCep: (cep: string) => void
-  options: ShippingOptionType[]
-  onChooseShippingType: (type: string) => void
+  options: GraphQLTypes['CalculateShippingResult'][]
+  onChooseShippingType: (type: ShippingClassification) => void
 }
 
 const Shipping: FC<ShippingProps> = ({
@@ -57,9 +57,9 @@ const Shipping: FC<ShippingProps> = ({
         <div className={styles.options}>
           {options.map((option) => (
             <ShippingOption
-              key={option.type}
+              key={option.classification}
               {...option}
-              onClick={() => onChooseShippingType(option.type)}
+              onClick={() => onChooseShippingType(option.classification)}
             />
           ))}
         </div>

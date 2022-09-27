@@ -25,7 +25,7 @@ const Product: NextPage<ProductProps> = ({ product }) => {
               crumbs={[
                 category && { href: `/${category.slug}`, label: category.name },
                 { href: product.slug, label: product.name },
-              ].filter((b) => b)}
+              ]}
             />
           </div>
           <div className={styles.right}>
