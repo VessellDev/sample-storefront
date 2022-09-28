@@ -1,3 +1,4 @@
+import { Box } from '@mui/material'
 import { GraphQLTypes } from '@vessell/sdk/lib/zeus'
 import Cart from 'components/cart/cart'
 import Categories from 'components/categories'
@@ -16,6 +17,16 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = ({ products, categories }) => {
   return (
     <div>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        height={112}
+        p={4}
+      >
+        <Logo />
+        <Cart />
+      </Box>
       <Slideshow />
       <Categories categories={categories} />
       <section className={styles.selections}>
@@ -30,14 +41,6 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
           products={products}
         />
       </section>
-      <header className={styles.header}>
-        <div className={styles.container}>
-          <div className={styles.content}>
-            <Logo />
-            <Cart />
-          </div>
-        </div>
-      </header>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 .wrapper {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   border-radius: 0 0 0 24px;
