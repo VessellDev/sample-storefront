@@ -4,9 +4,8 @@ import Breadcrumbs from 'components/breadcrumbs'
 import Cart from 'components/cart/cart'
 import Logo from 'components/logo'
 import Product from 'components/product'
-import { NextPage } from 'next'
-import { getServerSidePropsWithSDK } from 'props-with-sdk'
-import { useEffect, useState } from 'react'
+import { GetServerSideProps, NextPage } from 'next'
+import SDK from 'sdk'
 import styles from './produtos.module.css'
 
 interface ProductsProps {
@@ -40,58 +39,58 @@ const Products: NextPage<ProductsProps> = ({ products, category }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<ProductsProps>(
-  (SDK) => async (context) => {
-    const slug = context.query.produtos as string
+export const getServerSideProps: GetServerSideProps<ProductsProps> = async (
+  context,
+) => {
+  const slug = context.query.produtos as string
 
-    const products = await SDK.productSearch([
-      {
-        filter: {
-          categorySlug: slug,
-        },
+  const products = await SDK.productSearch([
+    {
+      filter: {
+        categorySlug: slug,
       },
-      {
-        items: {
-          nodes: {
-            id: true,
-            name: true,
-            slug: true,
-            mainImage: {
-              asset: {
-                url: true,
-              },
-            },
-            price: {
-              minPrice: true,
-            },
-          },
-        },
-      },
-    ])
-
-    const categories = await SDK.productCategories([
-      {
-        filter: {
-          slug: {
-            eq: slug,
-          },
-        },
-      },
-      {
+    },
+    {
+      items: {
         nodes: {
+          id: true,
           name: true,
           slug: true,
+          mainImage: {
+            asset: {
+              url: true,
+            },
+          },
+          price: {
+            minPrice: true,
+          },
         },
       },
-    ])
+    },
+  ])
 
-    return {
-      props: {
-        products: products.items.nodes,
-        category: categories.nodes[0],
+  const categories = await SDK.productCategories([
+    {
+      filter: {
+        slug: {
+          eq: slug,
+        },
       },
-    }
-  },
-)
+    },
+    {
+      nodes: {
+        name: true,
+        slug: true,
+      },
+    },
+  ])
+
+  return {
+    props: {
+      products: products.items.nodes,
+      category: categories.nodes[0],
+    },
+  }
+}
 
 export default Products

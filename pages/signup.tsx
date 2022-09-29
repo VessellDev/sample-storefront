@@ -9,38 +9,41 @@ import { useSnackbar } from 'notistack'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import SDK from 'sdk'
 
-interface LoginForm {
+interface SignupForm {
+  name: string
   email: string
   password: string
 }
 
-const Login: NextPage = () => {
+const Signup: NextPage = () => {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
-  } = useForm<LoginForm>()
+  } = useForm<SignupForm>()
 
   const router = useRouter()
   const { enqueueSnackbar } = useSnackbar()
   const { setupActivePurchaseId } = usePurchase()
 
-  const onSubmit: SubmitHandler<LoginForm> = async ({ email, password }) => {
+  const onSubmit: SubmitHandler<SignupForm> = async ({
+    name,
+    email,
+    password,
+  }) => {
     try {
-      await SDK.auth.signInWithEmailAndPassword(email, password)
+      await SDK.auth.createUserWithEmailAndPassword(name, email, password)
       await setupActivePurchaseId()
 
       const { redirect, ...query } = router.query
       router.push({ pathname: (redirect as string) || '/', query })
 
-      enqueueSnackbar('Bem-vindo de volta', { variant: 'success' })
+      enqueueSnackbar('Seja bem-vindo', { variant: 'success' })
     } catch (err: any) {
-      if (err.code === 'auth/wrong-password') {
-        return enqueueSnackbar('Senha incorreta', { variant: 'error' })
-      }
-
-      if (err.code === 'auth/user-not-found') {
-        return enqueueSnackbar('E-mail incorreto', { variant: 'error' })
+      if (err.code === 'auth/email-already-in-use') {
+        return enqueueSnackbar('Ja existe um e-mail com essa conta', {
+          variant: 'error',
+        })
       }
 
       enqueueSnackbar('Houve um problema, tente novamente mais tarde', {
@@ -53,7 +56,7 @@ const Login: NextPage = () => {
     <Box display="flex" flexDirection="column" minHeight="100vh">
       <Box display="flex" alignItems="center" height={112} p={4}>
         <Logo />
-        <Breadcrumbs crumbs={[{ href: '/login', label: 'Entrar' }]} />
+        <Breadcrumbs crumbs={[{ href: '/signup', label: 'Criar Conta' }]} />
       </Box>
       <Box display="flex" flex={1} alignItems="center" justifyContent="center">
         <Container maxWidth="xs">
@@ -64,7 +67,13 @@ const Login: NextPage = () => {
             component="form"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <Typography variant="h2">Entrar</Typography>
+            <Typography variant="h2">Criar Conta</Typography>
+            <TextField
+              label="Nome"
+              type="name"
+              {...register('name', { required: true })}
+              error={Boolean(errors.name)}
+            />
             <TextField
               label="E-mail"
               type="email"
@@ -79,7 +88,7 @@ const Login: NextPage = () => {
             />
             <Box display="flex" justifyContent="flex-end" gap={2}>
               <Link
-                href={`/signup${
+                href={`/login${
                   router.query.redirect
                     ? `?redirect=${router.query.redirect}`
                     : ''
@@ -87,11 +96,11 @@ const Login: NextPage = () => {
                 passHref
               >
                 <Button disabled={isSubmitting} color="secondary" component="a">
-                  CRIAR CONTA
+                  ENTRAR
                 </Button>
               </Link>
               <Button disabled={isSubmitting} type="submit" variant="contained">
-                ENTRAR
+                CRIAR CONTA
               </Button>
             </Box>
           </Box>
@@ -101,4 +110,4 @@ const Login: NextPage = () => {
   )
 }
 
-export default Login
+export default Signup

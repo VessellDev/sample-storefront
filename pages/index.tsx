@@ -5,8 +5,9 @@ import Categories from 'components/categories'
 import Logo from 'components/logo'
 import Selection from 'components/selection'
 import Slideshow from 'components/slideshow'
-import { NextPage } from 'next'
-import { getServerSidePropsWithSDK } from 'props-with-sdk'
+import UserStatus from 'components/userStatus'
+import { GetServerSideProps, NextPage } from 'next'
+import SDK from 'sdk'
 import styles from './index.module.css'
 
 interface HomeProps {
@@ -25,7 +26,10 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
         p={4}
       >
         <Logo />
-        <Cart />
+        <Box display="flex" alignItems="center" gap={1}>
+          <UserStatus />
+          <Cart />
+        </Box>
       </Box>
       <Slideshow />
       <Categories categories={categories} />
@@ -45,43 +49,41 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<HomeProps>(
-  (SDK) => async () => {
-    const products = await SDK.productSearch([
-      {
-        paging: { limit: 4 },
-      },
-      {
-        items: {
-          nodes: {
-            id: true,
-            name: true,
-            slug: true,
-            mainImage: { asset: { url: true } },
-            price: { minPrice: true },
-          },
-        },
-      },
-    ])
-
-    const categories = await SDK.productCategories([
-      {},
-      {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const products = await SDK.productSearch([
+    {
+      paging: { limit: 4 },
+    },
+    {
+      items: {
         nodes: {
           id: true,
           name: true,
           slug: true,
+          mainImage: { asset: { url: true } },
+          price: { minPrice: true },
         },
       },
-    ])
+    },
+  ])
 
-    return {
-      props: {
-        products: products.items.nodes,
-        categories: categories.nodes,
+  const categories = await SDK.productCategories([
+    {},
+    {
+      nodes: {
+        id: true,
+        name: true,
+        slug: true,
       },
-    }
-  },
-)
+    },
+  ])
+
+  return {
+    props: {
+      products: products.items.nodes,
+      categories: categories.nodes,
+    },
+  }
+}
 
 export default Home

@@ -1,3 +1,5 @@
+import SDK from 'sdk'
+
 export const usePurchase = () => {
   const STORAGE_KEY = 'PURCHASE_ID'
 
@@ -5,5 +7,19 @@ export const usePurchase = () => {
 
   const getPurchaseId = () => localStorage.getItem(STORAGE_KEY) || undefined
 
-  return { setPurchaseId, getPurchaseId }
+  const removePurchaseId = () => localStorage.removeItem(STORAGE_KEY)
+
+  const setupActivePurchaseId = async () => {
+    const purchaseId = getPurchaseId()
+    if (!purchaseId) return
+
+    return SDK.claimPurchase([{ purchaseId }, { id: true }])
+  }
+
+  return {
+    setPurchaseId,
+    getPurchaseId,
+    removePurchaseId,
+    setupActivePurchaseId,
+  }
 }

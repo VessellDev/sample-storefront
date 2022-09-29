@@ -15,6 +15,7 @@ import { useQuery } from 'react-query'
 import SDK from 'sdk'
 import { usePurchase } from 'hooks/usePurchase'
 import { OrderItemSortFields, SortDirection } from '@vessell/sdk/lib/zeus'
+import Link from 'next/link'
 
 const Cart: FC = () => {
   const { getPurchaseId } = usePurchase()
@@ -62,14 +63,17 @@ const Cart: FC = () => {
                     [styles.active]: active,
                   })}
                 >
-                  <Button
-                    className={styles.button}
-                    color="primary"
-                    variant="contained"
-                    disableElevation
-                  >
-                    FINALIZAR COMPRA
-                  </Button>
+                  <Link href="/checkout" passHref>
+                    <Button
+                      component="a"
+                      className={styles.button}
+                      color="primary"
+                      variant="contained"
+                      disableElevation
+                    >
+                      FINALIZAR COMPRA
+                    </Button>
+                  </Link>
                 </div>
               </>
             )}

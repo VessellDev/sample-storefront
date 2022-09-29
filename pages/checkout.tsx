@@ -12,6 +12,7 @@ import PaymentResume from 'components/checkout/stepResumes/paymentResume'
 import PersonalInfoResume from 'components/checkout/stepResumes/personalInfoResume'
 import ShippingResume from 'components/checkout/stepResumes/shippingResume'
 import Logo from 'components/logo'
+import { useAuth } from 'hooks/useAuth'
 import { usePurchase } from 'hooks/usePurchase'
 import { NextPage } from 'next'
 import { useState } from 'react'
@@ -19,32 +20,37 @@ import { useQuery } from 'react-query'
 import SDK from 'sdk'
 
 const Checkout: NextPage = () => {
+  const { isLogged } = useAuth({ redirect: true })
   const [currentIndex, setCurrentIndex] = useState(1)
 
   const { getPurchaseId } = usePurchase()
-  const { data, isLoading } = useQuery(['purchase'], () => {
-    const purchaseId = getPurchaseId()
+  const { data } = useQuery(
+    ['purchase'],
+    () => {
+      const purchaseId = getPurchaseId()
 
-    return SDK.activePurchase([
-      { purchaseId },
-      {
-        items: [
-          {},
-          {
-            id: true,
-            inventoryItem: {
-              product: {
-                mainImage: { asset: { url: true } },
-                name: true,
+      return SDK.activePurchase([
+        { purchaseId },
+        {
+          items: [
+            {},
+            {
+              id: true,
+              inventoryItem: {
+                product: {
+                  mainImage: { asset: { url: true } },
+                  name: true,
+                },
+                price: true,
               },
-              price: true,
             },
-          },
-        ],
-        total: true,
-      },
-    ])
-  })
+          ],
+          total: true,
+        },
+      ])
+    },
+    { enabled: isLogged },
+  )
 
   return (
     <Box>

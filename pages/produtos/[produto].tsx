@@ -4,8 +4,8 @@ import Cart from 'components/cart/cart'
 import Logo from 'components/logo'
 import Properties from 'components/productPage/properties'
 import Slideshow from 'components/productPage/slideshow'
-import { NextPage } from 'next'
-import { getServerSidePropsWithSDK } from 'props-with-sdk'
+import { GetServerSideProps, NextPage } from 'next'
+import SDK from 'sdk'
 import styles from './produto.module.css'
 
 interface ProductProps {
@@ -45,25 +45,24 @@ const Product: NextPage<ProductProps> = ({ product }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
-  (SDK) =>
-    async ({ query: { produto } }) => {
-      const product = await SDK.product([
-        { id: produto as string },
-        {
-          id: true,
-          slug: true,
-          name: true,
-          mainImage: { asset: { url: true } },
-          shortDescription: true,
-          inventoryItems: [{}, { id: true, price: true }],
-          categories: [{}, { id: true, name: true, slug: true }],
-        },
-      ])
-
-      if (!product) return { notFound: true }
-      return { props: { product } }
+export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
+  query: { produto },
+}) => {
+  const product = await SDK.product([
+    { slug: produto as string },
+    {
+      id: true,
+      slug: true,
+      name: true,
+      mainImage: { asset: { url: true } },
+      shortDescription: true,
+      inventoryItems: [{}, { id: true, price: true }],
+      categories: [{}, { id: true, name: true, slug: true }],
     },
-)
+  ])
+
+  if (!product) return { notFound: true }
+  return { props: { product } }
+}
 
 export default Product

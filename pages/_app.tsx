@@ -6,8 +6,6 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import createEmotionCache from 'createEmotionCache'
 import Head from 'next/head'
 import { SnackbarProvider } from 'notistack'
-import { useEffect } from 'react'
-import SDK from 'sdk'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 const clientSideEmotionCache = createEmotionCache()
@@ -24,10 +22,6 @@ function MyApp(props: MyAppProps) {
     pageProps,
     router,
   } = props
-
-  useEffect(() => {
-    SDK.setProjectCode(router.query.projectCode as string)
-  }, [router.query.projectCode])
 
   return (
     <CacheProvider value={emotionCache}>
