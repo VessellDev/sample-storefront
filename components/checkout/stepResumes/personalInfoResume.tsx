@@ -1,27 +1,27 @@
-import { Box, CardContent, Typography } from '@mui/material'
+import { Box, CardContent, LinearProgress, Typography } from '@mui/material'
 import { FC } from 'react'
 import { StepResumeProps } from '../step'
 
-const PersonalInfoResume: FC<StepResumeProps> = ({ onClick }) => (
+const PersonalInfoResume: FC<StepResumeProps> = ({ onClick, customer }) => (
   <CardContent onClick={onClick}>
     <Box display="flex" flexDirection="column" gap={2}>
       <Box>
-        <Typography variant="subtitle1">johndoe@gmail.com</Typography>
+        <Typography variant="subtitle1">NOME</Typography>
         <Typography variant="h4" color="secondary">
-          John Doe da Silva
+          {customer.name}
         </Typography>
       </Box>
       <Box display="flex" gap={2}>
         <Box width="100%">
           <Typography variant="subtitle1">CPF</Typography>
           <Typography variant="h4" color="secondary">
-            070.410.609-42
+            {customer.identificationNumber}
           </Typography>
         </Box>
         <Box width="100%">
-          <Typography variant="subtitle1">Celular</Typography>
+          <Typography variant="subtitle1">CELULAR</Typography>
           <Typography variant="h4" color="secondary">
-            (46) 9 8404-4713
+            {customer.phoneNumber}
           </Typography>
         </Box>
       </Box>

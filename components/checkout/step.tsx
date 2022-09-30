@@ -1,23 +1,53 @@
 import { CheckCircle } from '@mui/icons-material'
 import { Box, Card, CardProps, Collapse, Typography } from '@mui/material'
 import { FC, useCallback } from 'react'
+import { useQueryClient } from 'react-query'
 
-export interface StepFormProps {
+type Customer = {
+  name?: string
+  identificationNumber?: string
+  phoneNumber?: string
+}
+
+type Purchase = {
+  id: string
+  items: {
+    id: string
+    inventoryItem: {
+      product: {
+        mainImage?: { asset: { url: string } }
+        name: string
+      }
+      price: number
+    }
+  }[]
+  total: number
+}
+
+type StepDataProps = {
+  customer: Customer
+  purchase: Purchase
+}
+
+type StepProps = CardProps &
+  StepDataProps & {
+    index: number
+    title: string
+    currentIndex: number
+    Form: FC<StepFormProps>
+    Resume: FC<StepResumeProps>
+    setCurrentIndex: (index: number) => void
+    customer: Customer
+    purchase: Purchase
+  }
+
+export type StepFormProps = StepDataProps & {
   onSuccess: () => void
   onGoBack: () => void
 }
 
-export interface StepResumeProps {
+export type StepResumeProps = StepDataProps & {
   onClick: () => void
-}
-
-type StepProps = CardProps & {
-  index: number
-  title: string
-  currentIndex: number
-  Form: FC<StepFormProps>
-  Resume: FC<StepResumeProps>
-  setCurrentIndex: (index: number) => void
 }
 
 const Step: FC<StepProps> = ({
@@ -27,13 +57,18 @@ const Step: FC<StepProps> = ({
   setCurrentIndex,
   Form,
   Resume,
+  customer,
+  purchase,
   ...props
 }) => {
+  const queryClient = useQueryClient()
+
   const handleMoveForward = useCallback(() => {
     setCurrentIndex(index + 1)
   }, [index])
 
   const handleMoveBack = useCallback(() => {
+    queryClient.invalidateQueries(['customer', 'purchase'])
     setCurrentIndex(index)
   }, [index])
 
@@ -51,9 +86,20 @@ const Step: FC<StepProps> = ({
         </Box>
         <Collapse in={currentIndex >= index} unmountOnExit>
           {currentIndex <= index && (
-            <Form onSuccess={handleMoveForward} onGoBack={handleMoveBack} />
+            <Form
+              customer={customer}
+              purchase={purchase}
+              onSuccess={handleMoveForward}
+              onGoBack={handleMoveBack}
+            />
           )}
-          {currentIndex > index && <Resume onClick={handleMoveBack} />}
+          {currentIndex > index && (
+            <Resume
+              customer={customer}
+              purchase={purchase}
+              onClick={handleMoveBack}
+            />
+          )}
         </Collapse>
       </Box>
     </Card>

@@ -16,9 +16,6 @@ const Price: FC<PriceProps> = ({ value }) => {
       <Typography variant="h2" component="span">
         {intl.format(value)}
       </Typography>
-      <Typography variant="h4">
-        em até <b>12x</b> de <b>{intl.format(value / 12)}</b>
-      </Typography>
     </Box>
   )
 }
