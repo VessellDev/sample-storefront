@@ -1,28 +1,28 @@
-import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
-import classnames from "classnames"
-import Breadcrumbs from "components/breadcrumbs"
-import Cart from "components/cart/cart"
-import Logo from "components/logo"
-import Properties from "components/productPage/properties"
-import Slideshow from "components/productPage/slideshow"
-import { GetServerSidePropsContext, NextPage } from "next"
-import { getServerSidePropsWithSDK } from "props-with-sdk"
-import { useEffect, useState } from "react"
-import { useLocomotiveScroll } from "react-locomotive-scroll"
-import styles from "./produto.module.css"
+import { GraphQLTypes } from '@vessell/sdk/lib/zeus'
+import classnames from 'classnames'
+import Breadcrumbs from 'components/breadcrumbs'
+import Cart from 'components/cart/cart'
+import Logo from 'components/logo'
+import Properties from 'components/productPage/properties'
+import Slideshow from 'components/productPage/slideshow'
+import { GetServerSidePropsContext, NextPage } from 'next'
+import { getServerSidePropsWithSDK } from 'props-with-sdk'
+import { useEffect, useState } from 'react'
+import { useLocomotiveScroll } from 'react-locomotive-scroll'
+import styles from './produto.module.css'
 
 interface ProductProps {
-  product: GraphQLTypes["Product"]
-  category: GraphQLTypes["ProductCategory"]
+  product: GraphQLTypes['Product']
 }
 
-const Product: NextPage<ProductProps> = ({ product, category }) => {
+const Product: NextPage<ProductProps> = ({ product }) => {
   const { scroll } = useLocomotiveScroll()
   const [scrollY, setScrollY] = useState(0)
   const scrolling = scrollY > 0
+  const [category] = product.categories
 
   useEffect(() => {
-    scroll?.on("scroll", (args: any) => {
+    scroll?.on('scroll', (args: any) => {
       setScrollY(args.delta.y)
     })
   }, [scroll])
@@ -43,13 +43,14 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
           <div className={styles.left}>
             <Logo />
             <Breadcrumbs
-              crumbs={[
-                {
-                  href: `/${category.slug}`,
-                  label: category.name,
-                },
-                { href: product.slug, label: product.name },
-              ]}
+              crumbs={
+                category
+                  ? [
+                      { href: `/${category.slug}`, label: category.name },
+                      { href: product.slug, label: product.name },
+                    ]
+                  : [{ href: product.slug, label: product.name }]
+              }
             />
           </div>
           <div className={styles.right}>
@@ -59,7 +60,9 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
       </header>
       <div className={styles.content}>
         <div className={styles.left}>
-          <Slideshow image={product.mainImage?.asset.url} />
+          {product.mainImage && (
+            <Slideshow image={product.mainImage.asset.url} />
+          )}
         </div>
         <div className={styles.right}>
           <Properties {...product} />
@@ -69,57 +72,45 @@ const Product: NextPage<ProductProps> = ({ product, category }) => {
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>((SDK) => async (context) => {
-  const product = await SDK.product([
-    {
-      id: context.query.produto as string,
-    },
-    {
-      id: true,
-      slug: true,
-      name: true,
-      mainImage: {
-        asset: {
-          url: true,
-        },
+export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
+  (SDK) => async (context) => {
+    const product = await SDK.product([
+      {
+        id: context.query.produto as string,
       },
-      price: {
-        minPrice: true,
-      },
-      shortDescription: true,
-      categories: [
-        {},
-        {
-          id: true,
+      {
+        id: true,
+        slug: true,
+        name: true,
+        mainImage: {
+          asset: {
+            url: true,
+          },
         },
-      ],
-    },
-  ])
+        price: {
+          minPrice: true,
+        },
+        shortDescription: true,
+        categories: [
+          {},
+          {
+            id: true,
+            slug: true,
+          },
+        ],
+      },
+    ])
 
-  if (!product) {
-    return { notFound: true }
-  }
+    if (!product) {
+      return { notFound: true }
+    }
 
-  const category = await SDK.productCategory([
-    {
-      id: product?.categories[0].id as string,
-    },
-    {
-      name: true,
-      slug: true,
-    },
-  ])
-
-  if (!category) {
-    return { notFound: true }
-  }
-
-  return {
-    props: {
-      product,
-      category
-    },
-  }
-})
+    return {
+      props: {
+        product,
+      },
+    }
+  },
+)
 
 export default Product
