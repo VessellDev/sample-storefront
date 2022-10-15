@@ -74,6 +74,7 @@ const Product: NextPage<ProductProps> = ({ product }) => {
             {...(child && {
               name: child.name,
               price: child.price,
+              shortDescription: child.shortDescription,
             })}
           />
         </div>
@@ -150,6 +151,7 @@ export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
           {
             id: true,
             name: true,
+            shortDescription: true,
             price: {
               minPrice: true,
               maxPrice: true,
