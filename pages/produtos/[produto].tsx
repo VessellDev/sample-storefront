@@ -98,6 +98,50 @@ export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
             slug: true,
           },
         ],
+        variantAttributes: [
+          {},
+          {
+            id: true,
+            productId: true,
+            attributeId: true,
+            attribute: {
+              id: true,
+              type: true,
+              name: true,
+            },
+            variantOptions: [
+              {},
+              {
+                id: true,
+                isActive: true,
+                optionId: true,
+                option: {
+                  '...on ProductAttributeOptionText': {
+                    id: true,
+                    name: true,
+                  },
+                  '...on ProductAttributeOptionColor': {
+                    id: true,
+                    name: true,
+                    color: true,
+                  },
+                  '...on ProductAttributeOptionImage': {
+                    id: true,
+                    name: true,
+                    imageUrl: true,
+                  },
+                },
+              },
+            ],
+          },
+        ],
+        children: [
+          {},
+          {
+            id: true,
+            name: true,
+          },
+        ],
       },
     ])
 

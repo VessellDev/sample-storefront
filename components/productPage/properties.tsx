@@ -8,6 +8,7 @@ import Shipping from 'components/productPage/shipping'
 import { ShippingOptionType } from 'types/shipping'
 import ShippingButton from './shippingButton'
 import { mockShippingOptions } from 'mock'
+import { GraphQLTypes, ProductAttributeType } from '@vessell/sdk/lib/zeus'
 
 interface PropertiesProps {
   id: string
@@ -22,14 +23,28 @@ interface PropertiesProps {
   price?: {
     minPrice: number
   }
+  variantAttributes?: GraphQLTypes['Product']['variantAttributes']
+  children?: GraphQLTypes['Product']['children']
 }
 
 interface Selected {
   [key: number]: number
 }
 
-const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
+const Properties: FC<PropertiesProps> = ({
+  name,
+  price,
+  shortDescription,
+  variantAttributes,
+  children,
+}) => {
   const [selected, setSelected] = useState<Selected>({})
+  const [selectedAttributes, setSelectedAttributes] = useState<
+    {
+      attributeId: string
+      optionId: string
+    }[]
+  >()
   const [shippingActive, setShippingActive] = useState(false)
   const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>(
     [],
@@ -62,6 +77,26 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
     setShippingActive(false)
   }
 
+  const handleAttributeSelect = (attributeId: string, optionId: string) => {
+    if (typeof selectedAttributes === 'undefined') {
+      setSelectedAttributes([
+        {
+          attributeId,
+          optionId,
+        },
+      ])
+    } else {
+      setSelectedAttributes(
+        selectedAttributes
+          .filter((a) => a.attributeId !== attributeId)
+          .concat({
+            attributeId,
+            optionId,
+          }),
+      )
+    }
+  }
+
   // useEffect(() => {
   //   setSelected(getInitialSelected())
   // }, [])
@@ -73,6 +108,33 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
         <Typography variant="body1" className={styles.description}>
           {shortDescription}
         </Typography>
+        {variantAttributes && (
+          <div className={styles.attributes}>
+            {variantAttributes.map(({ id, attribute, variantOptions }) => (
+              <Attribute
+                key={id}
+                id={id}
+                label={attribute.name}
+                selected={selectedAttributes?.map((a) => a.optionId)}
+                onSelect={handleAttributeSelect}
+                options={variantOptions!
+                  .filter((vo) => vo.isActive)
+                  .map((variantOption) => ({
+                    id: variantOption.id,
+                    label: (
+                      variantOption.option as GraphQLTypes['ProductAttributeOption']
+                    ).name,
+                    hex:
+                      attribute.type === ProductAttributeType.Color
+                        ? (
+                            variantOption.option as unknown as GraphQLTypes['ProductAttributeOptionColor']
+                          ).color
+                        : undefined,
+                  }))}
+              />
+            ))}
+          </div>
+        )}
         {/* <div className={styles.attributes}>
           {attributes.map(attribute => (
             <Attribute
