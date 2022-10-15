@@ -20,6 +20,7 @@ const Product: NextPage<ProductProps> = ({ product }) => {
   const [scrollY, setScrollY] = useState(0)
   const scrolling = scrollY > 0
   const [category] = product.categories
+  const [child, setChild] = useState<GraphQLTypes['Product']>()
 
   useEffect(() => {
     scroll?.on('scroll', (args: any) => {
@@ -60,12 +61,21 @@ const Product: NextPage<ProductProps> = ({ product }) => {
       </header>
       <div className={styles.content}>
         <div className={styles.left}>
-          {product.mainImage && (
-            <Slideshow image={product.mainImage.asset.url} />
-          )}
+          <Slideshow
+            image={
+              child ? child.mainImage?.asset.url : product.mainImage?.asset.url
+            }
+          />
         </div>
         <div className={styles.right}>
-          <Properties {...product} />
+          <Properties
+            {...product}
+            onMatchChild={setChild}
+            {...(child && {
+              name: child.name,
+              price: child.price,
+            })}
+          />
         </div>
       </div>
     </div>
@@ -140,6 +150,23 @@ export const getServerSideProps = getServerSidePropsWithSDK<ProductProps>(
           {
             id: true,
             name: true,
+            price: {
+              minPrice: true,
+              maxPrice: true,
+            },
+            mainImage: {
+              asset: {
+                url: true,
+              },
+            },
+            attributeValues: [
+              {},
+              {
+                id: true,
+                attributeId: true,
+                optionId: true,
+              },
+            ],
           },
         ],
       },

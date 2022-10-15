@@ -25,10 +25,7 @@ interface PropertiesProps {
   }
   variantAttributes?: GraphQLTypes['Product']['variantAttributes']
   children?: GraphQLTypes['Product']['children']
-}
-
-interface Selected {
-  [key: number]: number
+  onMatchChild: (childProduct: GraphQLTypes['Product']) => void
 }
 
 const Properties: FC<PropertiesProps> = ({
@@ -37,8 +34,8 @@ const Properties: FC<PropertiesProps> = ({
   shortDescription,
   variantAttributes,
   children,
+  onMatchChild,
 }) => {
-  const [selected, setSelected] = useState<Selected>({})
   const [selectedAttributes, setSelectedAttributes] = useState<
     {
       attributeId: string
@@ -50,23 +47,6 @@ const Properties: FC<PropertiesProps> = ({
     [],
   )
   const [shippingType, setShippingType] = useState<string | undefined>()
-
-  // const getInitialSelected = () => {
-  //   const selected: Selected = {}
-
-  //   attributes.forEach(attribute => {
-  //     selected[attribute.id] = attribute.options[0].id
-  //   })
-
-  //   return selected
-  // }
-
-  // const setAttributeSelected = (attributeId: number, optionId: number) => {
-  //   const newSelected = { ...selected }
-  //   newSelected[attributeId] = optionId
-
-  //   setSelected(newSelected)
-  // }
 
   const fetchShipping = (cep: string) => {
     setTimeout(() => setShippingOptions([...mockShippingOptions]), 500)
@@ -97,9 +77,42 @@ const Properties: FC<PropertiesProps> = ({
     }
   }
 
-  // useEffect(() => {
-  //   setSelected(getInitialSelected())
-  // }, [])
+  useEffect(() => {
+    if (
+      selectedAttributes &&
+      selectedAttributes.length > 0 &&
+      selectedAttributes.length === variantAttributes!.length
+    ) {
+      if (!children || children.length === 0) {
+        alert('Nenhuma variação encontrada')
+        return
+      }
+
+      const child = children.find(({ attributeValues }) => {
+        if (attributeValues) {
+          return (
+            attributeValues
+              .filter((av) =>
+                selectedAttributes
+                  .map((a) => a.attributeId)
+                  .includes(av.attributeId),
+              )
+              .filter((av) =>
+                selectedAttributes.map((a) => a.optionId).includes(av.optionId),
+              ).length === selectedAttributes.length
+          )
+        }
+
+        return false
+      })
+
+      if (child) {
+        onMatchChild(child)
+      } else {
+        alert('Nenhuma variação encontrada')
+      }
+    }
+  }, [selectedAttributes, children])
 
   return (
     <>
@@ -113,14 +126,14 @@ const Properties: FC<PropertiesProps> = ({
             {variantAttributes.map(({ id, attribute, variantOptions }) => (
               <Attribute
                 key={id}
-                id={id}
+                id={attribute.id}
                 label={attribute.name}
                 selected={selectedAttributes?.map((a) => a.optionId)}
                 onSelect={handleAttributeSelect}
                 options={variantOptions!
                   .filter((vo) => vo.isActive)
                   .map((variantOption) => ({
-                    id: variantOption.id,
+                    id: variantOption.optionId,
                     label: (
                       variantOption.option as GraphQLTypes['ProductAttributeOption']
                     ).name,
@@ -135,16 +148,6 @@ const Properties: FC<PropertiesProps> = ({
             ))}
           </div>
         )}
-        {/* <div className={styles.attributes}>
-          {attributes.map(attribute => (
-            <Attribute
-              key={attribute.id}
-              {...attribute}
-              selected={selected[attribute.id]}
-              setSelected={(optionId: number) => setAttributeSelected(attribute.id, optionId)}
-            />
-          ))}
-        </div> */}
       </div>
       <div className={styles.footer}>
         {price && <Price value={price.minPrice} />}
