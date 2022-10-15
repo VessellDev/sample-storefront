@@ -38,7 +38,7 @@ const ShippingButton: FC<ShippingButtonProps> = ({
 
   useEffect(() => {
     if (!priceEl.current) return
-    console.log(price)
+
     if (price !== undefined)
       return setMaxWidth(priceEl.current.getBoundingClientRect().width * 1.6)
 

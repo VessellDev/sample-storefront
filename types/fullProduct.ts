@@ -5,13 +5,13 @@ export interface CategoryType {
 }
 
 export interface AttributeOptionType {
-  id: number
+  id: string
   label: string
   hex?: string
 }
 
 export interface AttributeType {
-  id: number
+  id: string
   label: string
   options: AttributeOptionType[]
 }

@@ -8,6 +8,7 @@ import Shipping from 'components/productPage/shipping'
 import { ShippingOptionType } from 'types/shipping'
 import ShippingButton from './shippingButton'
 import { mockShippingOptions } from 'mock'
+import { GraphQLTypes, ProductAttributeType } from '@vessell/sdk/lib/zeus'
 
 interface PropertiesProps {
   id: string
@@ -22,36 +23,30 @@ interface PropertiesProps {
   price?: {
     minPrice: number
   }
+  variantAttributes?: GraphQLTypes['Product']['variantAttributes']
+  children?: GraphQLTypes['Product']['children']
+  onMatchChild: (childProduct: GraphQLTypes['Product']) => void
 }
 
-interface Selected {
-  [key: number]: number
-}
-
-const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
-  const [selected, setSelected] = useState<Selected>({})
+const Properties: FC<PropertiesProps> = ({
+  name,
+  price,
+  shortDescription,
+  variantAttributes,
+  children,
+  onMatchChild,
+}) => {
+  const [selectedAttributes, setSelectedAttributes] = useState<
+    {
+      attributeId: string
+      optionId: string
+    }[]
+  >()
   const [shippingActive, setShippingActive] = useState(false)
   const [shippingOptions, setShippingOptions] = useState<ShippingOptionType[]>(
     [],
   )
   const [shippingType, setShippingType] = useState<string | undefined>()
-
-  // const getInitialSelected = () => {
-  //   const selected: Selected = {}
-
-  //   attributes.forEach(attribute => {
-  //     selected[attribute.id] = attribute.options[0].id
-  //   })
-
-  //   return selected
-  // }
-
-  // const setAttributeSelected = (attributeId: number, optionId: number) => {
-  //   const newSelected = { ...selected }
-  //   newSelected[attributeId] = optionId
-
-  //   setSelected(newSelected)
-  // }
 
   const fetchShipping = (cep: string) => {
     setTimeout(() => setShippingOptions([...mockShippingOptions]), 500)
@@ -62,9 +57,62 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
     setShippingActive(false)
   }
 
-  // useEffect(() => {
-  //   setSelected(getInitialSelected())
-  // }, [])
+  const handleAttributeSelect = (attributeId: string, optionId: string) => {
+    if (typeof selectedAttributes === 'undefined') {
+      setSelectedAttributes([
+        {
+          attributeId,
+          optionId,
+        },
+      ])
+    } else {
+      setSelectedAttributes(
+        selectedAttributes
+          .filter((a) => a.attributeId !== attributeId)
+          .concat({
+            attributeId,
+            optionId,
+          }),
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (
+      selectedAttributes &&
+      selectedAttributes.length > 0 &&
+      selectedAttributes.length === variantAttributes!.length
+    ) {
+      if (!children || children.length === 0) {
+        alert('Nenhuma variação encontrada')
+        return
+      }
+
+      const child = children.find(({ attributeValues }) => {
+        if (attributeValues) {
+          return (
+            attributeValues
+              .filter((av) =>
+                selectedAttributes
+                  .map((a) => a.attributeId)
+                  .includes(av.attributeId),
+              )
+              .filter((av) =>
+                selectedAttributes.map((a) => a.optionId).includes(av.optionId),
+              ).length === selectedAttributes.length
+          )
+        }
+
+        return false
+      })
+
+      if (child) {
+        onMatchChild(child)
+      } else {
+        alert('Nenhuma variação encontrada')
+      }
+    }
+  }, [selectedAttributes, children])
 
   return (
     <>
@@ -73,16 +121,33 @@ const Properties: FC<PropertiesProps> = ({ name, price, shortDescription }) => {
         <Typography variant="body1" className={styles.description}>
           {shortDescription}
         </Typography>
-        {/* <div className={styles.attributes}>
-          {attributes.map(attribute => (
-            <Attribute
-              key={attribute.id}
-              {...attribute}
-              selected={selected[attribute.id]}
-              setSelected={(optionId: number) => setAttributeSelected(attribute.id, optionId)}
-            />
-          ))}
-        </div> */}
+        {variantAttributes && (
+          <div className={styles.attributes}>
+            {variantAttributes.map(({ id, attribute, variantOptions }) => (
+              <Attribute
+                key={id}
+                id={attribute.id}
+                label={attribute.name}
+                selected={selectedAttributes?.map((a) => a.optionId)}
+                onSelect={handleAttributeSelect}
+                options={variantOptions!
+                  .filter((vo) => vo.isActive)
+                  .map((variantOption) => ({
+                    id: variantOption.optionId,
+                    label: (
+                      variantOption.option as GraphQLTypes['ProductAttributeOption']
+                    ).name,
+                    hex:
+                      attribute.type === ProductAttributeType.Color
+                        ? (
+                            variantOption.option as unknown as GraphQLTypes['ProductAttributeOptionColor']
+                          ).color
+                        : undefined,
+                  }))}
+              />
+            ))}
+          </div>
+        )}
       </div>
       <div className={styles.footer}>
         {price && <Price value={price.minPrice} />}

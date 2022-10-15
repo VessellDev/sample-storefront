@@ -4,32 +4,36 @@ import { AttributeType } from 'types/fullProduct'
 import styles from './attribute.module.css'
 
 interface AttributeProps extends AttributeType {
-  selected?: number
-  setSelected: (id: number) => void
+  selected?: string[]
+  onSelect: (attributeId: string, optionId: string) => void
 }
 
 const Attribute: FC<AttributeProps> = ({
+  id: attributeId,
   label,
   options,
   selected,
-  setSelected,
+  onSelect,
 }) => {
-  const isSelected = useCallback((id: number) => selected === id, [selected])
+  const isSelected = useCallback(
+    (id: string) => selected?.includes(id),
+    [selected],
+  )
 
   return (
     <div className={styles.attribute}>
       <Typography variant="subtitle2">{label}</Typography>
       <div>
-        {options.map(({ id, label, hex }) => (
+        {options.map(({ id: optionId, label, hex }) => (
           <Chip
-            key={id}
-            style={isSelected(id) ? { backgroundColor: hex } : undefined}
-            color={isSelected(id) ? 'primary' : 'default'}
-            variant={isSelected(id) ? 'default' : 'outlined'}
+            key={optionId}
+            style={isSelected(optionId) ? { backgroundColor: hex } : undefined}
+            color={isSelected(optionId) ? 'primary' : 'default'}
+            variant={!isSelected(optionId) ? 'outlined' : undefined}
             className={styles.option}
             label={label}
             clickable
-            onClick={() => setSelected(id)}
+            onClick={() => onSelect(attributeId, optionId)}
             avatar={
               hex ? (
                 <Avatar
