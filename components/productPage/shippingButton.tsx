@@ -2,35 +2,34 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { Button, Typography } from '@mui/material'
 import { Cancel, LocalShipping } from '@mui/icons-material'
 import styles from './shippingButton.module.css'
-import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
+import { ShippingClassification } from '@vessell/sdk/dist/cjs/zeus'
 import { useShippingLabel } from 'hooks/useShippingLabel'
 
 interface ShippingButtonProps {
   active: boolean
+  wasCalculated: boolean
+  selectedShippingClassification?: ShippingClassification
+  selectedShippingPrice?: number
   onClick: () => void
-  options: GraphQLTypes['CalculateShippingResult'][]
-  shippingType: ShippingClassification | undefined
 }
 
 const ShippingButton: FC<ShippingButtonProps> = ({
   active,
+  wasCalculated,
+  selectedShippingClassification,
+  selectedShippingPrice,
   onClick,
-  options,
-  shippingType,
 }) => {
   const [maxWidth, setMaxWidth] = useState(0)
   const priceEl = useRef<HTMLSpanElement>(null)
   const { getLabel } = useShippingLabel()
 
   const getButtonContent = (): [string, number?] => {
-    if (shippingType) {
-      const option = options.find(
-        (option) => option.classification === shippingType,
-      ) as GraphQLTypes['CalculateShippingResult']
+    if (wasCalculated) {
+      if (selectedShippingClassification) {
+        return [getLabel(selectedShippingClassification), selectedShippingPrice]
+      }
 
-      return [getLabel(option.classification), option.price]
-    }
-    if (options.length > 0) {
       return ['ESCOLHER FRETE']
     }
 

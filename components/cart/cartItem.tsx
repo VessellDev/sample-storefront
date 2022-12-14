@@ -33,10 +33,12 @@ const CartItem: FC<CartItemProps> = ({
   const { mutate: increment, isLoading: loadingIncrement } = useMutation(
     () => {
       const purchaseId = getPurchaseId()
-      return SDK.incrementOrderItem([
-        { input: { itemId: id, quantity: 1, purchaseId } },
-        { status: true },
-      ])
+      return SDK.request('mutation')({
+        incrementOrderItem: [
+          { input: { itemId: id, quantity: 1, purchaseId } },
+          { status: true },
+        ],
+      })
     },
     {
       onSuccess: () => queryClient.invalidateQueries(['purchase']),
@@ -44,18 +46,22 @@ const CartItem: FC<CartItemProps> = ({
   )
 
   const { mutate: decrement, isLoading: loadingDecrement } = useMutation(
-    () => {
+    async () => {
       const purchaseId = getPurchaseId()
 
-      return quantity > 1
-        ? SDK.decrementOrderItem([
-            { input: { itemId: id, quantity: 1, purchaseId } },
-            { status: true },
-          ])
-        : SDK.removeOrderItem([
-            { input: { itemId: id, purchaseId } },
-            { status: true },
-          ])
+      quantity > 1
+        ? await SDK.request('mutation')({
+            decrementOrderItem: [
+              { input: { itemId: id, quantity: 1, purchaseId } },
+              { status: true },
+            ],
+          })
+        : await SDK.request('mutation')({
+            removeOrderItem: [
+              { input: { itemId: id, purchaseId } },
+              { status: true },
+            ],
+          })
     },
     {
       onSuccess: () => queryClient.invalidateQueries(['purchase']),

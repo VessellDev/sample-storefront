@@ -5,7 +5,6 @@ import {
   LinearProgress,
   Typography,
 } from '@mui/material'
-import { ModelTypes } from '@vessell/sdk/lib/zeus'
 import Breadcrumbs from 'components/breadcrumbs'
 import Step from 'components/checkout/step'
 import AddressForm from 'components/checkout/stepForms/addressForm'
@@ -32,29 +31,42 @@ const Checkout: NextPage = () => {
 
   const { data: customer } = useQuery(
     ['customer'],
-    () =>
-      SDK.me({
-        '...on Customer': {
-          name: true,
-          identificationNumber: true,
-          phoneNumber: true,
+    async () => {
+      const { me } = await SDK.request('query')({
+        me: {
+          '...on Customer': {
+            name: true,
+            identificationNumber: true,
+            phoneNumber: true,
+          },
+          '...on User': { name: true },
         },
-        '...on User': { id: true },
-      }) as unknown as ModelTypes['Customer'],
+      })
+
+      return me
+    },
     { enabled: isLogged },
   )
 
   const { data: purchase } = useQuery(
     ['purchase'],
-    () => {
+    async () => {
       const purchaseId = getPurchaseId()
 
-      return SDK.activePurchase([
-        { purchaseId },
-        {
-          items: [
-            {},
-            {
+      const { activePurchase } = await SDK.request('query')({
+        activePurchase: [
+          { purchaseId },
+          {
+            id: true,
+            paymentMethodCode: true,
+            shippingClassification: true,
+            address: { id: true },
+            customer: {
+              name: true,
+              identificationNumber: true,
+              phoneNumber: true,
+            },
+            items: {
               id: true,
               inventoryItem: {
                 product: {
@@ -64,10 +76,12 @@ const Checkout: NextPage = () => {
                 price: true,
               },
             },
-          ],
-          total: true,
-        },
-      ])
+            total: true,
+          },
+        ],
+      })
+
+      return activePurchase
     },
     { enabled: isLogged },
   )
@@ -81,9 +95,9 @@ const Checkout: NextPage = () => {
     if (purchase.address) return setCurrentIndex(3)
 
     if (
-      customer.name &&
-      customer.identificationNumber &&
-      customer.phoneNumber
+      purchase.customer?.name &&
+      purchase.customer?.identificationNumber &&
+      purchase.customer?.phoneNumber
     ) {
       return setCurrentIndex(2)
     }

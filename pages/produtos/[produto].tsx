@@ -1,3 +1,4 @@
+import { $, Selector } from '@vessell/sdk/dist/cjs/zeus'
 import { GraphQLTypes } from '@vessell/sdk/lib/zeus'
 import Breadcrumbs from 'components/breadcrumbs'
 import Cart from 'components/cart/cart'
@@ -7,6 +8,21 @@ import Slideshow from 'components/productPage/slideshow'
 import { GetServerSideProps, NextPage } from 'next'
 import SDK from 'sdk'
 import styles from './produto.module.css'
+
+const productSelector = Selector('Query')({
+  product: [
+    { slug: $('slug', 'String') },
+    {
+      id: true,
+      slug: true,
+      name: true,
+      mainImage: { asset: { url: true } },
+      shortDescription: true,
+      inventoryItems: [{}, { id: true, price: true }],
+      categories: [{}, { id: true, name: true, slug: true }],
+    },
+  ],
+})
 
 interface ProductProps {
   product: GraphQLTypes['Product']
@@ -48,18 +64,9 @@ const Product: NextPage<ProductProps> = ({ product }) => {
 export const getServerSideProps: GetServerSideProps<ProductProps> = async ({
   query: { produto },
 }) => {
-  const product = await SDK.product([
-    { slug: produto as string },
-    {
-      id: true,
-      slug: true,
-      name: true,
-      mainImage: { asset: { url: true } },
-      shortDescription: true,
-      inventoryItems: [{}, { id: true, price: true }],
-      categories: [{}, { id: true, name: true, slug: true }],
-    },
-  ])
+  const product = await SDK.request('query')(productSelector, {
+    variables: { slug: produto },
+  })
 
   if (!product) return { notFound: true }
   return { props: { product } }

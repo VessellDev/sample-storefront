@@ -13,7 +13,9 @@ export const usePurchase = () => {
     const purchaseId = getPurchaseId()
     if (!purchaseId) return
 
-    return SDK.claimPurchase([{ purchaseId }, { id: true }])
+    return SDK.request('mutation')({
+      claimPurchase: [{ purchaseId }, { id: true }],
+    })
   }
 
   return {

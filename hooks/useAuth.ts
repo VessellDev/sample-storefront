@@ -1,4 +1,4 @@
-import { User } from '@vessell/sdk/lib/types/auth'
+import { User } from '@vessell/sdk/dist/cjs/types/auth'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 import SDK from 'sdk'

@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, TextField } from '@mui/material'
-import { ModelTypes } from '@vessell/sdk/lib/zeus'
 import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
@@ -26,20 +25,22 @@ const PersonalInfoForm: FC<StepFormProps> = ({ onSuccess, customer }) => {
       phoneNumber,
       identificationNumber,
     }: PersonalInfoFormInputs) => {
-      const data = (await SDK.me({
-        '...on Customer': { id: true },
-        '...on User': { id: true },
-      })) as unknown as ModelTypes['Customer']
-
-      return SDK.updateOneCustomer([
-        {
-          input: {
-            id: data.id,
-            update: { name, phoneNumber, identificationNumber },
-          },
+      const { me } = await SDK.request('query')({
+        me: {
+          '...on Customer': { id: true },
+          '...on User': { id: true },
         },
-        { id: true },
-      ])
+      })
+
+      return SDK.request('mutation')({
+        updateCustomer: [
+          {
+            id: me.id,
+            input: { name, phoneNumber, identificationNumber },
+          },
+          { id: true },
+        ],
+      })
     },
     { onSuccess },
   )

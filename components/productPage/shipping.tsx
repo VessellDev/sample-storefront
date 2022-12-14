@@ -4,20 +4,26 @@ import { FC, useEffect, useState } from 'react'
 import styles from './shipping.module.css'
 import InputMask from 'react-input-mask'
 import ShippingOption from './shippingOption'
-import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
+// import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
+import { ShippingClassification } from '@vessell/sdk/dist/cjs/zeus'
+
+export type ShippingOption = {
+  shippingClassification: ShippingClassification
+  price: number
+}
 
 interface ShippingProps {
   active: boolean
+  options: ShippingOption[]
   onFillCep: (cep: string) => void
-  options: GraphQLTypes['CalculateShippingResult'][]
-  onChooseShippingType: (type: ShippingClassification) => void
+  onChooseShipping: (shippingOption: ShippingOption) => void
 }
 
 const Shipping: FC<ShippingProps> = ({
   active,
-  onFillCep,
   options,
-  onChooseShippingType,
+  onFillCep,
+  onChooseShipping,
 }) => {
   const [cep, setCep] = useState('')
   const [loading, setLoading] = useState(false)

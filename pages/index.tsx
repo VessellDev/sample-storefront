@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { GraphQLTypes } from '@vessell/sdk/lib/zeus'
+import { GraphQLTypes, InputType, Selector } from '@vessell/sdk/dist/cjs/zeus'
 import Cart from 'components/cart/cart'
 import Categories from 'components/categories'
 import Logo from 'components/logo'
@@ -10,9 +10,45 @@ import { GetServerSideProps, NextPage } from 'next'
 import SDK from 'sdk'
 import styles from './index.module.css'
 
+const productsSelector = Selector('Query')({
+  productSearch: [
+    {
+      paging: { limit: 4 },
+    },
+    {
+      items: {
+        id: true,
+        name: true,
+        slug: true,
+        mainImage: { asset: { url: true } },
+        price: { minPrice: true },
+      },
+    },
+  ],
+})
+
+const categoriesSelector = Selector('Query')({
+  productCategories: [
+    {},
+    {
+      items: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    },
+  ],
+})
+
 interface HomeProps {
-  products: GraphQLTypes['ProductSearchResult']['items']['nodes']
-  categories: GraphQLTypes['ProductCategory'][]
+  products: InputType<
+    GraphQLTypes['Query'],
+    typeof productsSelector
+  >['productSearch']['items']
+  categories: InputType<
+    GraphQLTypes['Query'],
+    typeof categoriesSelector
+  >['productCategories']['items']
 }
 
 const Home: NextPage<HomeProps> = ({ products, categories }) => {
@@ -50,38 +86,13 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const products = await SDK.productSearch([
-    {
-      paging: { limit: 4 },
-    },
-    {
-      items: {
-        nodes: {
-          id: true,
-          name: true,
-          slug: true,
-          mainImage: { asset: { url: true } },
-          price: { minPrice: true },
-        },
-      },
-    },
-  ])
-
-  const categories = await SDK.productCategories([
-    {},
-    {
-      nodes: {
-        id: true,
-        name: true,
-        slug: true,
-      },
-    },
-  ])
+  const { productSearch } = await SDK.request('query')(productsSelector)
+  const { productCategories } = await SDK.request('query')(categoriesSelector)
 
   return {
     props: {
-      products: products.items.nodes,
-      categories: categories.nodes,
+      products: productSearch.items,
+      categories: productCategories.items,
     },
   }
 }

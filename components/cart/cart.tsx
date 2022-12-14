@@ -14,26 +14,20 @@ import CartItem from 'components/cart/cartItem'
 import { useQuery } from 'react-query'
 import SDK from 'sdk'
 import { usePurchase } from 'hooks/usePurchase'
-import { OrderItemSortFields, SortDirection } from '@vessell/sdk/lib/zeus'
 import Link from 'next/link'
 
 const Cart: FC = () => {
   const { getPurchaseId } = usePurchase()
   const [active, setActive] = useState(false)
 
-  const { data } = useQuery(['purchase'], () => {
+  const { data } = useQuery(['purchase'], async () => {
     const purchaseId = getPurchaseId()
 
-    return SDK.activePurchase([
-      { purchaseId },
-      {
-        items: [
-          {
-            sorting: [
-              { field: OrderItemSortFields.id, direction: SortDirection.ASC },
-            ],
-          },
-          {
+    const { activePurchase } = await SDK.request('query')({
+      activePurchase: [
+        { purchaseId },
+        {
+          items: {
             id: true,
             price: true,
             quantity: true,
@@ -41,9 +35,11 @@ const Cart: FC = () => {
               product: { name: true, mainImage: { asset: { url: true } } },
             },
           },
-        ],
-      },
-    ])
+        },
+      ],
+    })
+
+    return activePurchase
   })
 
   return (

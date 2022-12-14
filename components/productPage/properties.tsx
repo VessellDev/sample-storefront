@@ -7,7 +7,13 @@ import ShippingButton from './shippingButton'
 import PurchaseButton from './purchaseButton'
 import { useQuery } from 'react-query'
 import SDK from 'sdk'
-import { GraphQLTypes, ShippingClassification } from '@vessell/sdk/lib/zeus'
+import {
+  GraphQLTypes,
+  Selector,
+  ShippingClassification,
+  $,
+  InputType,
+} from '@vessell/sdk/dist/cjs/zeus'
 
 interface PropertiesProps {
   id: string
@@ -25,6 +31,20 @@ interface PropertiesProps {
   }[]
 }
 
+const calculateShippingSelector = Selector('Query')({
+  calculateShipping: [
+    {
+      input: $('input', 'CalculateShippingInput!'),
+    },
+    {
+      classification: true,
+      maxDeliveryTime: true,
+      minDeliveryTime: true,
+      price: true,
+    },
+  ],
+})
+
 const Properties: FC<PropertiesProps> = ({
   name,
   inventoryItems,
@@ -33,28 +53,24 @@ const Properties: FC<PropertiesProps> = ({
   const item = inventoryItems && inventoryItems[0]
   const [cep, setCep] = useState<string>()
   const [shippingActive, setShippingActive] = useState(false)
-  const [shippingOptions, setShippingOptions] = useState<
-    GraphQLTypes['CalculateShippingResult'][]
-  >([])
-  const [shippingType, setShippingType] = useState<ShippingClassification>()
+  const [shippingOptions, setShippingOptions] =
+    useState<
+      InputType<GraphQLTypes['Query'], typeof calculateShippingSelector>
+    >()
+  const [shippingClassification, setShippingClassification] =
+    useState<ShippingClassification>()
 
   const {} = useQuery(
     ['productShipping'],
     () =>
-      SDK.calculateShipping([
-        {
+      SDK.request('query')(calculateShippingSelector, {
+        variables: {
           input: {
             items: [{ inventoryItemId: item?.id as string, quantity: 1 }],
             postalCodeTo: cep as string,
           },
         },
-        {
-          classification: true,
-          maxDeliveryTime: true,
-          minDeliveryTime: true,
-          price: true,
-        },
-      ]),
+      }),
     {
       enabled: Boolean(cep),
       onSuccess: (data) => {
@@ -63,8 +79,12 @@ const Properties: FC<PropertiesProps> = ({
     },
   )
 
-  const handleChooseShipping = (type: ShippingClassification) => {
-    setShippingType(type)
+  const handleChooseShipping = (
+    shippingClassification: ShippingClassification,
+    price: number,
+  ) => {
+    setShippingClassification(shippingClassification, price)
+    // setShippingPrice()
     setShippingActive(false)
   }
 
@@ -83,8 +103,10 @@ const Properties: FC<PropertiesProps> = ({
             <ShippingButton
               active={shippingActive}
               onClick={() => setShippingActive(!shippingActive)}
-              options={shippingOptions}
-              shippingType={shippingType}
+              wasCalculated={Boolean(
+                shippingOptions && shippingOptions.calculateShipping,
+              )}
+              selectedShippingClassification={shippingClassification}
             />
           </div>
           <div className={styles['right-button']}>
