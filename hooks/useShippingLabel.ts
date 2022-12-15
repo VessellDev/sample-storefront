@@ -1,4 +1,4 @@
-import { ShippingClassification } from '@vessell/sdk/lib/zeus'
+import { ShippingClassification } from '@vessell/sdk/dist/cjs/zeus'
 
 const LABELS = {
   [ShippingClassification.Fastest]: 'Expresso',
