@@ -22,20 +22,6 @@ interface PropertiesProps {
   }[]
 }
 
-const calculateShippingSelector = Selector('Query')({
-  calculateShipping: [
-    {
-      input: $('input', 'CalculateShippingInput!'),
-    },
-    {
-      classification: true,
-      maxDeliveryTime: true,
-      minDeliveryTime: true,
-      price: true,
-    },
-  ],
-})
-
 const Properties: FC<PropertiesProps> = ({
   name,
   inventoryItems,

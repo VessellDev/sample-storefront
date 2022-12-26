@@ -1,26 +1,57 @@
-import { Box, Button } from '@mui/material'
+import { Box, LinearProgress } from '@mui/material'
 import { mockInstallments } from 'mock'
-import { FC, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
+import { useQuery } from 'react-query'
+import SDK from 'sdk'
 import Installment from '../installment'
-import PaymentOption from '../paymentOption'
+import PaymentMethod from '../paymentMethod'
 import { StepFormProps } from '../step'
-import InstallmentForm from './installmentForm'
+import InstallmentForm from './paymentForm/installmentForm'
 import BilletForm from './paymentForm/billetForm'
 import CardForm from './paymentForm/cardForm'
 import PixForm from './paymentForm/pixForm'
+import { usePaymentLabel } from 'hooks/usePaymentMethodLabel'
 
-const OPTIONS = ['Cartão de Crédito', 'Cartão de Débito', 'Pix', 'Boleto']
-
-const PaymentForm: FC<StepFormProps> = ({ onSuccess }) => {
-  const [paymentOption, setPaymentOption] = useState<number>()
+const PaymentForm: FC<StepFormProps> = ({
+  onSuccess,
+  purchase,
+  setLoading,
+}) => {
+  const [paymentMethodIndex, setPaymentMethodIndex] = useState<number>()
   const [installments, setInstallments] = useState<number>()
+  const { getLabel } = usePaymentLabel()
 
-  if (paymentOption === 0 || paymentOption === 1) {
+  const { data } = useQuery(['payment-methods'], () =>
+    SDK.request('query')({
+      paymentMethods: {
+        code: true,
+        group: true,
+        isActive: true,
+      },
+    }),
+  )
+
+  const paymentMethods = useMemo(
+    () => data?.paymentMethods.filter((method) => method.isActive),
+    [data],
+  )
+
+  const paymentMethod = useMemo(
+    () =>
+      paymentMethodIndex !== undefined && paymentMethods
+        ? paymentMethods[paymentMethodIndex]
+        : undefined,
+    [paymentMethodIndex, paymentMethods],
+  )
+
+  if (paymentMethod?.group === 'CreditCard') {
     if (installments === undefined) {
       return (
         <InstallmentForm
-          onSuccess={() => setInstallments(0)}
-          onGoBack={() => setPaymentOption(undefined)}
+          onSuccess={setInstallments}
+          onGoBack={() => setPaymentMethodIndex(undefined)}
+          purchase={purchase}
+          setLoading={setLoading}
         />
       )
     }
@@ -28,41 +59,53 @@ const PaymentForm: FC<StepFormProps> = ({ onSuccess }) => {
     return (
       <Box display="flex" flexDirection="column" gap={3}>
         <Installment
-          {...mockInstallments[installments]}
+          installment={installments}
+          total={purchase.total}
           onClick={() => setInstallments(undefined)}
         />
         <CardForm
+          code={paymentMethod.code}
+          installments={installments}
           onGoBack={() => setInstallments(undefined)}
           onSuccess={onSuccess}
+          purchase={purchase}
+          setLoading={setLoading}
         />
       </Box>
     )
   }
 
-  if (paymentOption === 2) {
+  if (paymentMethod?.group === 'Pix') {
     return (
       <PixForm
-        onGoBack={() => setPaymentOption(undefined)}
+        code={paymentMethod.code}
+        onGoBack={() => setPaymentMethodIndex(undefined)}
         onSuccess={onSuccess}
+        purchase={purchase}
+        setLoading={setLoading}
       />
     )
   }
 
-  if (paymentOption === 3) {
+  if (paymentMethod?.group === 'Boleto') {
     return (
       <BilletForm
-        onGoBack={() => setPaymentOption(undefined)}
+        code={paymentMethod.code}
+        onGoBack={() => setPaymentMethodIndex(undefined)}
         onSuccess={onSuccess}
+        purchase={purchase}
+        setLoading={setLoading}
       />
     )
   }
 
   return (
     <Box display="flex" flexDirection="column" gap={1}>
-      {OPTIONS.map((option, i) => (
-        <PaymentOption key={i} onClick={() => setPaymentOption(i)}>
-          {option}
-        </PaymentOption>
+      {!paymentMethods && <LinearProgress />}
+      {paymentMethods?.map((method, i) => (
+        <PaymentMethod key={i} onClick={() => setPaymentMethodIndex(i)}>
+          {getLabel(method.group)}
+        </PaymentMethod>
       ))}
     </Box>
   )

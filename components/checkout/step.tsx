@@ -1,19 +1,46 @@
 import { CheckCircle } from '@mui/icons-material'
-import { Box, Card, CardProps, Collapse, Typography } from '@mui/material'
-import { FC, useCallback } from 'react'
+import {
+  Box,
+  Card,
+  CardProps,
+  CircularProgress,
+  Collapse,
+  Typography,
+} from '@mui/material'
+import {
+  PaymentMethodGroup,
+  ShippingClassification,
+} from '@vessell/sdk/dist/cjs/zeus'
+import { FC, useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'
-
-type Customer = {
-  name?: string
-  identificationNumber?: string
-  phoneNumber?: string
-}
 
 type Purchase = {
   id: string
+  paymentMethodGroup?: PaymentMethodGroup
+  shippingClassification?: ShippingClassification
+  shippingPrice?: number
+  maxDeliveryTime?: number
+  minDeliveryTime?: number
+  address?: {
+    id: string
+    postalCode: string
+    city: string
+    state: string
+    street: string
+    neighborhood: string
+    number: string
+    complement?: string
+  }
+  customer?: {
+    name?: string
+    identificationNumber?: string
+    phoneNumber?: string
+  }
   items: {
     id: string
+    quantity: number
     inventoryItem: {
+      id: string
       product: {
         mainImage?: { asset: { url: string } }
         name: string
@@ -25,7 +52,6 @@ type Purchase = {
 }
 
 type StepDataProps = {
-  customer: Customer
   purchase: Purchase
 }
 
@@ -37,13 +63,13 @@ type StepProps = CardProps &
     Form: FC<StepFormProps>
     Resume: FC<StepResumeProps>
     setCurrentIndex: (index: number) => void
-    customer: Customer
     purchase: Purchase
   }
 
 export type StepFormProps = StepDataProps & {
-  onSuccess: () => void
+  onSuccess: (data: any) => void
   onGoBack: () => void
+  setLoading: (loading: boolean) => void
 }
 
 export type StepResumeProps = StepDataProps & {
@@ -57,19 +83,22 @@ const Step: FC<StepProps> = ({
   setCurrentIndex,
   Form,
   Resume,
-  customer,
   purchase,
   ...props
 }) => {
   const queryClient = useQueryClient()
+  const [loading, setLoading] = useState(false)
 
-  const handleMoveForward = useCallback(() => {
+  const handleMoveForward = useCallback(async () => {
+    await queryClient.invalidateQueries(['purchase'])
+
     setCurrentIndex(index + 1)
+    setLoading(false)
   }, [index])
 
   const handleMoveBack = useCallback(() => {
-    queryClient.invalidateQueries(['customer', 'purchase'])
     setCurrentIndex(index)
+    setLoading(false)
   }, [index])
 
   return (
@@ -82,23 +111,20 @@ const Step: FC<StepProps> = ({
           >
             {index}. {title}
           </Typography>
-          {currentIndex > index && <CheckCircle color="success" />}
+          {!loading && currentIndex > index && <CheckCircle color="success" />}
+          {loading && <CircularProgress size={24} />}
         </Box>
         <Collapse in={currentIndex >= index} unmountOnExit>
           {currentIndex <= index && (
             <Form
-              customer={customer}
               purchase={purchase}
               onSuccess={handleMoveForward}
               onGoBack={handleMoveBack}
+              setLoading={setLoading}
             />
           )}
           {currentIndex > index && (
-            <Resume
-              customer={customer}
-              purchase={purchase}
-              onClick={handleMoveBack}
-            />
+            <Resume purchase={purchase} onClick={handleMoveBack} />
           )}
         </Collapse>
       </Box>

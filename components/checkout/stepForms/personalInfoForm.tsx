@@ -1,6 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, TextField } from '@mui/material'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import SDK from 'sdk'
@@ -12,12 +12,16 @@ interface PersonalInfoFormInputs {
   identificationNumber: string
 }
 
-const PersonalInfoForm: FC<StepFormProps> = ({ onSuccess, customer }) => {
+const PersonalInfoForm: FC<StepFormProps> = ({
+  onSuccess,
+  purchase,
+  setLoading,
+}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<PersonalInfoFormInputs>({ defaultValues: customer })
+  } = useForm<PersonalInfoFormInputs>({ defaultValues: purchase.customer })
 
   const { mutate, isLoading } = useMutation(
     async ({
@@ -25,17 +29,9 @@ const PersonalInfoForm: FC<StepFormProps> = ({ onSuccess, customer }) => {
       phoneNumber,
       identificationNumber,
     }: PersonalInfoFormInputs) => {
-      const { me } = await SDK.request('query')({
-        me: {
-          '...on Customer': { id: true },
-          '...on User': { id: true },
-        },
-      })
-
       return SDK.request('mutation')({
         updateCustomer: [
           {
-            id: me.id,
             input: { name, phoneNumber, identificationNumber },
           },
           { id: true },
@@ -44,6 +40,10 @@ const PersonalInfoForm: FC<StepFormProps> = ({ onSuccess, customer }) => {
     },
     { onSuccess },
   )
+
+  useEffect(() => {
+    setLoading(isLoading)
+  }, [isLoading, setLoading])
 
   return (
     <Box
@@ -75,12 +75,7 @@ const PersonalInfoForm: FC<StepFormProps> = ({ onSuccess, customer }) => {
         />
       </Box>
       <Box display="flex" justifyContent="flex-end">
-        <LoadingButton
-          variant="text"
-          type="submit"
-          loading={isLoading}
-          disabled={isLoading}
-        >
+        <LoadingButton variant="text" type="submit" disabled={isLoading}>
           CONTINUAR
         </LoadingButton>
       </Box>

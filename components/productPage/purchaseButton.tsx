@@ -21,13 +21,13 @@ const PurchaseButton: FC<PurchaseButtonProps> = ({ inventoryItemId }) => {
       return SDK.request('mutation')({
         addOrderItem: [
           { input: { inventoryItemId, quantity: 1, purchaseId } },
-          { id: true },
+          { purchaseId: true },
         ],
       })
     },
     {
       onSuccess: ({ addOrderItem }) => {
-        setPurchaseId(addOrderItem.id)
+        setPurchaseId(addOrderItem.purchaseId)
         queryClient.invalidateQueries(['purchase'])
 
         enqueueSnackbar('Produto adicionado ao carrinho', {

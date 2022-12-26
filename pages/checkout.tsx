@@ -1,10 +1,5 @@
-import {
-  Box,
-  Button,
-  Container,
-  LinearProgress,
-  Typography,
-} from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Box, Container, LinearProgress, Typography } from '@mui/material'
 import Breadcrumbs from 'components/breadcrumbs'
 import Step from 'components/checkout/step'
 import AddressForm from 'components/checkout/stepForms/addressForm'
@@ -20,33 +15,16 @@ import Logo from 'components/logo'
 import { useAuth } from 'hooks/useAuth'
 import { usePurchase } from 'hooks/usePurchase'
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import SDK from 'sdk'
 
 const Checkout: NextPage = () => {
   const { getPurchaseId } = usePurchase()
   const { isLogged } = useAuth({ redirect: true })
   const [currentIndex, setCurrentIndex] = useState(1)
-
-  const { data: customer } = useQuery(
-    ['customer'],
-    async () => {
-      const { me } = await SDK.request('query')({
-        me: {
-          '...on Customer': {
-            name: true,
-            identificationNumber: true,
-            phoneNumber: true,
-          },
-          '...on User': { name: true },
-        },
-      })
-
-      return me
-    },
-    { enabled: isLogged },
-  )
+  const router = useRouter()
 
   const { data: purchase } = useQuery(
     ['purchase'],
@@ -58,9 +36,21 @@ const Checkout: NextPage = () => {
           { purchaseId },
           {
             id: true,
-            paymentMethodCode: true,
+            paymentMethodGroup: true,
             shippingClassification: true,
-            address: { id: true },
+            shippingPrice: true,
+            maxDeliveryTime: true,
+            minDeliveryTime: true,
+            address: {
+              id: true,
+              postalCode: true,
+              city: true,
+              state: true,
+              street: true,
+              neighborhood: true,
+              number: true,
+              complement: true,
+            },
             customer: {
               name: true,
               identificationNumber: true,
@@ -68,7 +58,9 @@ const Checkout: NextPage = () => {
             },
             items: {
               id: true,
+              quantity: true,
               inventoryItem: {
+                id: true,
                 product: {
                   mainImage: { asset: { url: true } },
                   name: true,
@@ -86,11 +78,21 @@ const Checkout: NextPage = () => {
     { enabled: isLogged },
   )
 
-  useEffect(() => {
-    if (!customer) return setCurrentIndex(1)
-    if (!purchase) return
+  const { mutate: closePurchase, isLoading } = useMutation(
+    () =>
+      SDK.request('mutation')({
+        closePurchase: { id: true },
+      }),
+    {
+      onSuccess: (data) => router.push(`/pedidos/${data.closePurchase.id}`),
+    },
+  )
 
-    if (purchase.paymentMethodCode) return setCurrentIndex(5)
+  useEffect(() => {
+    if (!purchase) return
+    if (!purchase.customer) return setCurrentIndex(1)
+
+    if (purchase.paymentMethodGroup) return setCurrentIndex(5)
     if (purchase.shippingClassification) return setCurrentIndex(4)
     if (purchase.address) return setCurrentIndex(3)
 
@@ -101,9 +103,9 @@ const Checkout: NextPage = () => {
     ) {
       return setCurrentIndex(2)
     }
-  }, [customer, purchase])
+  }, [purchase])
 
-  if (!isLogged || !purchase || !customer) return <LinearProgress />
+  if (!isLogged || !purchase) return <LinearProgress />
 
   return (
     <Box>
@@ -126,7 +128,6 @@ const Checkout: NextPage = () => {
                 setCurrentIndex={setCurrentIndex}
                 Form={PersonalInfoForm}
                 Resume={PersonalInfoResume}
-                customer={customer}
                 purchase={purchase}
               />
               <Step
@@ -136,7 +137,6 @@ const Checkout: NextPage = () => {
                 setCurrentIndex={setCurrentIndex}
                 Form={AddressForm}
                 Resume={AddressResume}
-                customer={customer}
                 purchase={purchase}
               />
               <Step
@@ -146,7 +146,6 @@ const Checkout: NextPage = () => {
                 setCurrentIndex={setCurrentIndex}
                 Form={ShippingForm}
                 Resume={ShippingResume}
-                customer={customer}
                 purchase={purchase}
               />
               <Step
@@ -156,13 +155,17 @@ const Checkout: NextPage = () => {
                 setCurrentIndex={setCurrentIndex}
                 Form={PaymentForm}
                 Resume={PaymentResume}
-                customer={customer}
                 purchase={purchase}
               />
               <Box display="flex" justifyContent="flex-end">
-                <Button variant="contained" disabled={currentIndex !== 5}>
+                <LoadingButton
+                  variant="contained"
+                  disabled={currentIndex !== 5}
+                  onClick={() => closePurchase()}
+                  loading={isLoading}
+                >
                   FINALIZAR
-                </Button>
+                </LoadingButton>
               </Box>
             </Box>
           </Box>

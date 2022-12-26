@@ -10,7 +10,7 @@ import { GetServerSideProps, NextPage } from 'next'
 import SDK from 'sdk'
 import styles from './index.module.css'
 
-const productsSelector = Selector('Query')({
+const selector = Selector('Query')({
   productSearch: [
     {
       paging: { limit: 4 },
@@ -25,9 +25,6 @@ const productsSelector = Selector('Query')({
       },
     },
   ],
-})
-
-const categoriesSelector = Selector('Query')({
   productCategories: [
     {},
     {
@@ -43,11 +40,11 @@ const categoriesSelector = Selector('Query')({
 interface HomeProps {
   products: InputType<
     GraphQLTypes['Query'],
-    typeof productsSelector
+    typeof selector
   >['productSearch']['items']
   categories: InputType<
     GraphQLTypes['Query'],
-    typeof categoriesSelector
+    typeof selector
   >['productCategories']['items']
 }
 
@@ -86,8 +83,9 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const { productSearch } = await SDK.request('query')(productsSelector)
-  const { productCategories } = await SDK.request('query')(categoriesSelector)
+  const { productSearch, productCategories } = await SDK.request('query')(
+    selector,
+  )
 
   return {
     props: {

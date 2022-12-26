@@ -3,12 +3,21 @@ import { Box, CardContent, Typography } from '@mui/material'
 
 interface InstallmentProps {
   installment: number
-  price: number
+  total: number
   onClick?: () => void
 }
 
-const Installment: FC<InstallmentProps> = ({ installment, price, onClick }) => (
-  <CardContent onClick={onClick} sx={{ cursor: 'pointer' }}>
+const Installment: FC<InstallmentProps> = ({ installment, total, onClick }) => (
+  <CardContent
+    onClick={onClick}
+    sx={{
+      cursor: 'pointer',
+      transition: 'all 0.2s ease-in-out',
+      '&:hover': {
+        transform: 'translateX(8px)',
+      },
+    }}
+  >
     <Box
       width="100%"
       display="flex"
@@ -25,7 +34,7 @@ const Installment: FC<InstallmentProps> = ({ installment, price, onClick }) => (
           {new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
-          }).format(price)}
+          }).format(total / installment)}
         </Typography>
         <Typography variant="h4" color="secondary" component="span">
           sem juros
