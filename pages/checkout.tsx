@@ -21,10 +21,15 @@ import { useMutation, useQuery } from 'react-query'
 import SDK from 'sdk'
 
 const Checkout: NextPage = () => {
-  const { getPurchaseId } = usePurchase()
+  const { getPurchaseId, removePurchaseId } = usePurchase()
   const { isLogged } = useAuth({ redirect: true })
   const [currentIndex, setCurrentIndex] = useState(1)
   const router = useRouter()
+
+  const handlePurchaseSuccess = (id: string) => {
+    removePurchaseId()
+    router.push(`/pedidos/${id}`)
+  }
 
   const { data: purchase } = useQuery(
     ['purchase'],
@@ -84,7 +89,7 @@ const Checkout: NextPage = () => {
         closePurchase: { id: true },
       }),
     {
-      onSuccess: (data) => router.push(`/pedidos/${data.closePurchase.id}`),
+      onSuccess: (data) => handlePurchaseSuccess(data.closePurchase.id),
     },
   )
 
