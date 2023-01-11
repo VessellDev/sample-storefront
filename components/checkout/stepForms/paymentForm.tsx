@@ -13,6 +13,7 @@ import { usePaymentLabel } from 'hooks/usePaymentMethodLabel'
 
 const PaymentForm: FC<StepFormProps> = ({
   onSuccess,
+  onError,
   purchase,
   setLoading,
 }) => {
@@ -50,6 +51,7 @@ const PaymentForm: FC<StepFormProps> = ({
       return (
         <InstallmentForm
           onSuccess={setInstallments}
+          onError={onError}
           onGoBack={() => setPaymentMethodIndex(undefined)}
           purchase={purchase}
           setLoading={setLoading}
@@ -69,6 +71,7 @@ const PaymentForm: FC<StepFormProps> = ({
           installments={installments}
           onGoBack={() => setInstallments(undefined)}
           onSuccess={onSuccess}
+          onError={onError}
           purchase={purchase}
           setLoading={setLoading}
         />
@@ -82,6 +85,7 @@ const PaymentForm: FC<StepFormProps> = ({
         code={paymentMethod.code}
         onGoBack={() => setPaymentMethodIndex(undefined)}
         onSuccess={onSuccess}
+        onError={onError}
         purchase={purchase}
         setLoading={setLoading}
       />
@@ -94,6 +98,7 @@ const PaymentForm: FC<StepFormProps> = ({
         code={paymentMethod.code}
         onGoBack={() => setPaymentMethodIndex(undefined)}
         onSuccess={onSuccess}
+        onError={onError}
         purchase={purchase}
         setLoading={setLoading}
       />

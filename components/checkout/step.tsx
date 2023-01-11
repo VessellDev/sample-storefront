@@ -11,6 +11,7 @@ import {
   PaymentMethodGroup,
   ShippingClassification,
 } from '@vessell/sdk/dist/cjs/zeus'
+import { useSnackbar } from 'notistack'
 import { FC, useCallback, useState } from 'react'
 import { useQueryClient } from 'react-query'
 
@@ -69,6 +70,7 @@ type StepProps = CardProps &
 
 export type StepFormProps = StepDataProps & {
   onSuccess: (data: any) => void
+  onError: () => void
   onGoBack: () => void
   setLoading: (loading: boolean) => void
 }
@@ -88,6 +90,8 @@ const Step: FC<StepProps> = ({
   ...props
 }) => {
   const queryClient = useQueryClient()
+  const { enqueueSnackbar } = useSnackbar()
+
   const [loading, setLoading] = useState(false)
 
   const handleMoveForward = useCallback(async () => {
@@ -96,6 +100,13 @@ const Step: FC<StepProps> = ({
     setCurrentIndex(index + 1)
     setLoading(false)
   }, [index])
+
+  const handleError = () => {
+    setLoading(false)
+    enqueueSnackbar('Houve um problema ao processar a requisição', {
+      variant: 'error',
+    })
+  }
 
   const handleMoveBack = useCallback(() => {
     setCurrentIndex(index)
@@ -120,6 +131,7 @@ const Step: FC<StepProps> = ({
             <Form
               purchase={purchase}
               onSuccess={handleMoveForward}
+              onError={handleError}
               onGoBack={handleMoveBack}
               setLoading={setLoading}
             />

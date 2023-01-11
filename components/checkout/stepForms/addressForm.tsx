@@ -18,7 +18,7 @@ interface AddressFormInputs {
   complement?: string
 }
 
-const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading }) => {
+const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading, onError }) => {
   const [isCreating, setIsCreating] = useState(false)
   const {
     register,
@@ -68,7 +68,7 @@ const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading }) => {
       SDK.request('mutation')({
         setPurchaseAddress: [{ addressId }, { id: true }],
       }),
-    { onSuccess },
+    { onSuccess, onError },
   )
 
   useEffect(() => {

@@ -14,6 +14,7 @@ interface PersonalInfoFormInputs {
 
 const PersonalInfoForm: FC<StepFormProps> = ({
   onSuccess,
+  onError,
   purchase,
   setLoading,
 }) => {
@@ -38,7 +39,7 @@ const PersonalInfoForm: FC<StepFormProps> = ({
         ],
       })
     },
-    { onSuccess },
+    { onSuccess, onError },
   )
 
   useEffect(() => {

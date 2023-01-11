@@ -17,6 +17,7 @@ import { useAuth } from 'hooks/useAuth'
 import { usePurchase } from 'hooks/usePurchase'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
+import { useSnackbar } from 'notistack'
 import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from 'react-query'
 import SDK from 'sdk'
@@ -26,9 +27,11 @@ const Checkout: NextPage = () => {
   const { isLogged } = useAuth({ redirect: true })
   const [currentIndex, setCurrentIndex] = useState(1)
   const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
 
   const handlePurchaseSuccess = (id: string) => {
     removePurchaseId()
+    enqueueSnackbar('Compra finalizada com sucesso', { variant: 'success' })
     router.push(`/pedidos/${id}`)
   }
 
@@ -85,6 +88,12 @@ const Checkout: NextPage = () => {
     { enabled: isLogged },
   )
 
+  const handleError = () => {
+    enqueueSnackbar('Houve um problema ao finalizar a compra', {
+      variant: 'error',
+    })
+  }
+
   const { mutate: closePurchase, isLoading } = useMutation(
     () =>
       SDK.request('mutation')({
@@ -92,6 +101,7 @@ const Checkout: NextPage = () => {
       }),
     {
       onSuccess: (data) => handlePurchaseSuccess(data.closePurchase.id),
+      onError: handleError,
     },
   )
 

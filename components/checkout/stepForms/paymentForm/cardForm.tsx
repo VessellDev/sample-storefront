@@ -24,6 +24,7 @@ const CardForm: FC<CardFormProps> = ({
   installments,
   onGoBack,
   onSuccess,
+  onError,
   setLoading,
 }) => {
   const { register, handleSubmit } = useForm<CardFormInputs>()
@@ -69,7 +70,7 @@ const CardForm: FC<CardFormProps> = ({
         },
       )
     },
-    { onSuccess },
+    { onSuccess, onError },
   )
 
   useEffect(() => {

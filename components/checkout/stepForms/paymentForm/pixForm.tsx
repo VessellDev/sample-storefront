@@ -12,6 +12,7 @@ const PixForm: FC<PixFormProps> = ({
   code,
   onGoBack,
   onSuccess,
+  onError,
   setLoading,
 }) => {
   const { mutate, isLoading } = useMutation(
@@ -19,7 +20,7 @@ const PixForm: FC<PixFormProps> = ({
       SDK.request('mutation')({
         setPurchasePaymentMethod: [{ paymentMethodCode: code }, { id: true }],
       }),
-    { onSuccess },
+    { onSuccess, onError },
   )
 
   useEffect(() => {

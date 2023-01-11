@@ -9,6 +9,7 @@ import { useShippingLabel } from 'hooks/useShippingLabel'
 
 const ShippingForm: FC<StepFormProps> = ({
   onSuccess,
+  onError,
   purchase,
   setLoading,
 }) => {
@@ -44,7 +45,7 @@ const ShippingForm: FC<StepFormProps> = ({
           { id: true },
         ],
       }),
-    { onSuccess },
+    { onSuccess, onError },
   )
 
   useEffect(() => {
