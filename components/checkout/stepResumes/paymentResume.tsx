@@ -12,7 +12,10 @@ const PaymentResume: FC<StepResumeProps> = ({ onClick, purchase }) => {
   return (
     <Box display="flex" flexDirection="column" gap={1} onClick={onClick}>
       {purchase.paymentMethodGroup === PaymentMethodGroup.CreditCard && (
-        <Installment installment={1} total={purchase.total} />
+        <Installment
+          installment={purchase.paymentAdditionalData?.installments}
+          total={purchase.total}
+        />
       )}
       <CardContent>
         <Box display="flex" alignItems="center" justifyContent="space-between">

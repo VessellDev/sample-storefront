@@ -51,8 +51,8 @@ interface SummaryProps {
 
 const Summary: FC<SummaryProps> = ({ purchase }) => (
   <Box position="sticky" top={32} display="flex" flexDirection="column" gap={2}>
-    {purchase.items.map(({ id, inventoryItem }) => (
-      <Item key={id} {...inventoryItem} />
+    {purchase.items.map(({ id, inventoryItem, quantity }) => (
+      <Item key={id} {...inventoryItem} quantity={quantity} />
     ))}
     <Box display="flex" alignItems="center" justifyContent="flex-end" gap={2}>
       {purchase.shippingClassification && (

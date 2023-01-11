@@ -1,5 +1,6 @@
 import { LoadingButton } from '@mui/lab'
 import { Box, Container, LinearProgress, Typography } from '@mui/material'
+import { PaymentMethodGroup } from '@vessell/sdk/dist/cjs/zeus'
 import Breadcrumbs from 'components/breadcrumbs'
 import Step from 'components/checkout/step'
 import AddressForm from 'components/checkout/stepForms/addressForm'
@@ -74,6 +75,7 @@ const Checkout: NextPage = () => {
               },
             },
             total: true,
+            paymentAdditionalData: true,
           },
         ],
       })
@@ -93,20 +95,27 @@ const Checkout: NextPage = () => {
     },
   )
 
+  const moveToCheckpoint = (checkpoint: number) =>
+    setCurrentIndex(Math.max(currentIndex, checkpoint))
+
   useEffect(() => {
     if (!purchase) return
-    if (!purchase.customer) return setCurrentIndex(1)
+    if (!purchase.customer) return moveToCheckpoint(1)
 
-    if (purchase.paymentMethodGroup) return setCurrentIndex(5)
-    if (purchase.shippingClassification) return setCurrentIndex(4)
-    if (purchase.address) return setCurrentIndex(3)
+    if (
+      purchase.paymentMethodGroup &&
+      purchase.paymentMethodGroup !== PaymentMethodGroup.CreditCard
+    )
+      return moveToCheckpoint(5)
+    if (purchase.shippingClassification) return moveToCheckpoint(4)
+    if (purchase.address) return moveToCheckpoint(3)
 
     if (
       purchase.customer?.name &&
       purchase.customer?.identificationNumber &&
       purchase.customer?.phoneNumber
     ) {
-      return setCurrentIndex(2)
+      return moveToCheckpoint(2)
     }
   }, [purchase])
 

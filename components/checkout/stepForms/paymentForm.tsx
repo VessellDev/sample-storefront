@@ -1,5 +1,4 @@
 import { Box, LinearProgress } from '@mui/material'
-import { mockInstallments } from 'mock'
 import { FC, useMemo, useState } from 'react'
 import { useQuery } from 'react-query'
 import SDK from 'sdk'
@@ -18,7 +17,9 @@ const PaymentForm: FC<StepFormProps> = ({
   setLoading,
 }) => {
   const [paymentMethodIndex, setPaymentMethodIndex] = useState<number>()
-  const [installments, setInstallments] = useState<number>()
+  const [installments, setInstallments] = useState<number | undefined>(
+    purchase.paymentAdditionalData?.installments,
+  )
   const { getLabel } = usePaymentLabel()
 
   const { data } = useQuery(['payment-methods'], () =>

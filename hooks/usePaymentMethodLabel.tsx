@@ -1,7 +1,7 @@
 import { PaymentMethodGroup } from '@vessell/sdk/dist/cjs/zeus'
 import {
   ArticleOutlined,
-  CreditCardOffOutlined,
+  CreditCardOutlined,
   PaymentsOutlined,
   PixOutlined,
 } from '@mui/icons-material'
@@ -17,7 +17,7 @@ const LABELS = {
   },
   [PaymentMethodGroup.CreditCard]: {
     label: 'Cartão de Crédito',
-    Icon: CreditCardOffOutlined,
+    Icon: CreditCardOutlined,
   },
   [PaymentMethodGroup.Other]: {
     label: 'Outros',

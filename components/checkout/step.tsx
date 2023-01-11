@@ -49,6 +49,7 @@ type Purchase = {
     }
   }[]
   total: number
+  paymentAdditionalData?: any
 }
 
 type StepDataProps = {

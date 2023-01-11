@@ -49,8 +49,6 @@ const CardForm: FC<CardFormProps> = ({
         ],
       })
 
-      console.log(cardToken)
-
       await SDK.request('mutation')(
         {
           setPurchasePaymentMethod: [
