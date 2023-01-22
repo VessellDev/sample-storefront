@@ -3,6 +3,7 @@ import { $ } from '@vessell/sdk/dist/cjs/zeus'
 import { StepFormProps } from 'components/checkout/step'
 import { FC, useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import InputMask from 'react-input-mask'
 import { useMutation } from 'react-query'
 import SDK from 'sdk'
 
@@ -27,7 +28,12 @@ const CardForm: FC<CardFormProps> = ({
   onError,
   setLoading,
 }) => {
-  const { register, handleSubmit } = useForm<CardFormInputs>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<CardFormInputs>()
 
   const { mutate, isLoading } = useMutation(
     async (payload: CardFormInputs) => {
@@ -38,8 +44,9 @@ const CardForm: FC<CardFormProps> = ({
           {
             input: {
               holderName: payload.holderName,
-              holderIdentificationNumber: payload.holderIdentificationNumber,
-              number: payload.number,
+              holderIdentificationNumber:
+                payload.holderIdentificationNumber.replace(/\D/g, ''),
+              number: payload.number.replace(/\D/g, ''),
               expirationMonth: parseInt(payload.expiration.split('/')[0]),
               expirationYear: parseInt(payload.expiration.split('/')[1]),
               cvv: payload.cvv,
@@ -90,24 +97,61 @@ const CardForm: FC<CardFormProps> = ({
           {...register('holderName', { required: true })}
           sx={{ flex: 1 }}
           label="Nome"
+          error={Boolean(errors.holderName)}
+          helperText={errors.holderName && 'Insira o nome'}
         />
-        <TextField
+        <InputMask
+          mask="999.999.999-99"
           {...register('holderIdentificationNumber', { required: true })}
-          sx={{ flex: 1 }}
-          label="CPF"
-        />
+          onChange={(e) =>
+            setValue('holderIdentificationNumber', e.target.value)
+          }
+        >
+          {() => (
+            <TextField
+              sx={{ flex: 1 }}
+              label="CPF"
+              error={Boolean(errors.holderIdentificationNumber)}
+              helperText={errors.holderIdentificationNumber && 'Insira o CPF'}
+            />
+          )}
+        </InputMask>
       </Box>
-      <TextField {...register('number', { required: true })} label="Número" />
+      <InputMask
+        mask="9999 9999 9999 9999"
+        {...register('number', { required: true })}
+        onChange={(e) => setValue('number', e.target.value)}
+      >
+        {() => (
+          <TextField
+            label="Número"
+            error={Boolean(errors.number)}
+            helperText={errors.number && 'Insira o número'}
+          />
+        )}
+      </InputMask>
       <Box display="flex" width="100%" gap={1}>
-        <TextField
+        <InputMask
+          mask="99/9999"
           {...register('expiration', { required: true })}
-          sx={{ flex: 0.7 }}
-          label="Validade"
-        />
+          onChange={(e) => setValue('expiration', e.target.value)}
+        >
+          {() => (
+            <TextField
+              sx={{ flex: 0.7 }}
+              label="Validade"
+              error={Boolean(errors.expiration)}
+              helperText={errors.expiration && 'Insira a validade'}
+            />
+          )}
+        </InputMask>
         <TextField
           {...register('cvv', { required: true })}
           sx={{ flex: 0.3 }}
+          type="number"
           label="CVC"
+          error={Boolean(errors.cvv)}
+          helperText={errors.cvv && 'Insira o CVC'}
         />
       </Box>
       <Box display="flex" justifyContent="flex-end" gap={1}>
