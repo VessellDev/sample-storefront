@@ -2,6 +2,7 @@ import { Add, ArrowBack } from '@mui/icons-material'
 import { Box, Button, CardContent, TextField, Typography } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import InputMask from 'react-input-mask'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import SDK from 'sdk'
 import { StepFormProps } from '../step'
@@ -24,6 +25,7 @@ const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading, onError }) => {
     register,
     formState: { errors },
     handleSubmit,
+    setValue,
   } = useForm<AddressFormInputs>()
 
   const queryClient = useQueryClient()
@@ -49,9 +51,18 @@ const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading, onError }) => {
   })
 
   const { mutate: createNewAddress, isLoading: isCreateLoading } = useMutation(
-    async (input: AddressFormInputs) => {
+    async ({ phoneNumber, postalCode, ...input }: AddressFormInputs) => {
       const { createCustomerAddress } = await SDK.request('mutation')({
-        createCustomerAddress: [{ input }, { id: true }],
+        createCustomerAddress: [
+          {
+            input: {
+              ...input,
+              phoneNumber: phoneNumber.replace(/\D/g, ''),
+              postalCode: postalCode.replace(/\D/g, ''),
+            },
+          },
+          { id: true },
+        ],
       })
 
       setAddress(createCustomerAddress.id)
@@ -60,6 +71,7 @@ const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading, onError }) => {
       onSuccess: () => {
         queryClient.invalidateQueries(['customer-addresses'])
       },
+      onError,
     },
   )
 
@@ -127,56 +139,79 @@ const AddressForm: FC<StepFormProps> = ({ onSuccess, setLoading, onError }) => {
           createNewAddress as SubmitHandler<AddressFormInputs>,
         )}
       >
-        <Box width="100%" display="flex" alignItems="center" gap={1}>
+        <Box width="100%" display="flex" gap={1}>
           <TextField
-            label="Nome"
+            label="Nome Completo"
             sx={{ flex: 1 }}
             {...register('name', { required: true })}
             error={Boolean(errors.name)}
+            helperText={errors.name && 'Insira um nome'}
           />
-          <TextField
-            label="Telefone"
-            sx={{ flex: 1 }}
+          <InputMask
+            mask="(99)99999-9999"
             {...register('phoneNumber', { required: true })}
-            error={Boolean(errors.phoneNumber)}
-          />
+            onChange={(e) => setValue('phoneNumber', e.target.value)}
+          >
+            {() => (
+              <TextField
+                sx={{ flex: 1 }}
+                label="Celular"
+                error={Boolean(errors.phoneNumber)}
+                helperText={errors.phoneNumber && 'Insira seu telefone'}
+              />
+            )}
+          </InputMask>
         </Box>
-        <TextField
-          label="CEP"
+        <InputMask
+          mask="99.999-999"
           {...register('postalCode', { required: true })}
-          error={Boolean(errors.postalCode)}
-        />
-        <Box width="100%" display="flex" alignItems="center" gap={1}>
+          onChange={(e) => setValue('postalCode', e.target.value)}
+        >
+          {() => (
+            <TextField
+              label="CEP"
+              error={Boolean(errors.postalCode)}
+              helperText={errors.postalCode && 'Insira o cep'}
+            />
+          )}
+        </InputMask>
+        <Box width="100%" display="flex" gap={1}>
           <TextField
             label="Cidade"
             sx={{ flex: 0.7 }}
             {...register('city', { required: true })}
             error={Boolean(errors.city)}
+            helperText={errors.city && 'Insira a cidade'}
           />
           <TextField
             label="Estado"
             sx={{ flex: 0.3 }}
             {...register('state', { required: true })}
             error={Boolean(errors.state)}
+            helperText={errors.state && 'Insira um estado'}
           />
         </Box>
         <TextField
           label="Bairro"
           {...register('neighborhood', { required: true })}
           error={Boolean(errors.neighborhood)}
+          helperText={errors.neighborhood && 'Insira um bairro'}
         />
-        <Box width="100%" display="flex" alignItems="center" gap={1}>
+        <Box width="100%" display="flex" gap={1}>
           <TextField
             label="Rua"
             sx={{ flex: 0.7 }}
             {...register('street', { required: true })}
             error={Boolean(errors.street)}
+            helperText={errors.street && 'Insira uma rua'}
           />
           <TextField
             label="Número"
+            type="number"
             sx={{ flex: 0.3 }}
             {...register('number', { required: true })}
             error={Boolean(errors.number)}
+            helperText={errors.number && 'Insira um número'}
           />
         </Box>
         <TextField label="Complemento" {...register('complement')} />

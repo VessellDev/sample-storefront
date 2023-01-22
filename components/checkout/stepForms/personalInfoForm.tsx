@@ -61,7 +61,7 @@ const PersonalInfoForm: FC<StepFormProps> = ({
       onSubmit={handleSubmit(mutate as SubmitHandler<PersonalInfoFormInputs>)}
     >
       <TextField
-        label="Nome"
+        label="Nome Completo"
         {...register('name', { required: true })}
         error={Boolean(errors.name)}
       />
@@ -93,8 +93,7 @@ const PersonalInfoForm: FC<StepFormProps> = ({
               fullWidth
               error={Boolean(errors.phoneNumber)}
               helperText={
-                errors.identificationNumber &&
-                'Insira seu Telefone para continuar'
+                errors.phoneNumber && 'Insira seu telefone para continuar'
               }
             />
           )}
