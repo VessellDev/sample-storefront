@@ -1,34 +1,69 @@
-import { GraphQLTypes } from "@vessell/sdk/lib/zeus"
-import classnames from "classnames"
-import Cart from "components/cart/cart"
-import Categories from "components/categories"
-import Logo from "components/logo"
-import Selection from "components/selection"
-import Slideshow from "components/slideshow"
-import { NextPage } from "next"
-import { getServerSidePropsWithSDK } from "props-with-sdk"
-import { useEffect, useState } from "react"
-import { useLocomotiveScroll } from "react-locomotive-scroll"
-import styles from "./index.module.css"
+import { Box } from '@mui/material'
+import { GraphQLTypes, InputType, Selector } from '@vessell/sdk/dist/cjs/zeus'
+import Cart from 'components/cart/cart'
+import Categories from 'components/categories'
+import Logo from 'components/logo'
+import Selection from 'components/selection'
+import Slideshow from 'components/slideshow'
+import UserStatus from 'components/userStatus'
+import { GetServerSideProps, NextPage } from 'next'
+import SDK from 'sdk'
+import styles from './index.module.css'
+
+const selector = Selector('Query')({
+  productSearch: [
+    {
+      paging: { limit: 4 },
+    },
+    {
+      items: {
+        id: true,
+        name: true,
+        slug: true,
+        mainImage: { asset: { url: true } },
+        price: { minPrice: true },
+      },
+    },
+  ],
+  productCategories: [
+    {},
+    {
+      items: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    },
+  ],
+})
 
 interface HomeProps {
-  products: GraphQLTypes["ProductSearchResult"]["items"]["nodes"]
-  categories: GraphQLTypes["ProductCategory"][]
+  products: InputType<
+    GraphQLTypes['Query'],
+    typeof selector
+  >['productSearch']['items']
+  categories: InputType<
+    GraphQLTypes['Query'],
+    typeof selector
+  >['productCategories']['items']
 }
 
 const Home: NextPage<HomeProps> = ({ products, categories }) => {
-  const { scroll } = useLocomotiveScroll()
-  const [scrollY, setScrollY] = useState(0)
-  const scrolling = scrollY > 0
-
-  useEffect(() => {
-    scroll?.on("scroll", (args: any) => {
-      args.delta && setScrollY(args.delta.y)
-    })
-  }, [scroll])
-
   return (
-    <div data-scroll-section id="container">
+    <div>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        height={112}
+        p={4}
+      >
+        <Logo />
+        <Box display="flex" alignItems="center" gap={1}>
+          <UserStatus />
+          <Cart />
+        </Box>
+      </Box>
       <Slideshow />
       <Categories categories={categories} />
       <section className={styles.selections}>
@@ -43,64 +78,21 @@ const Home: NextPage<HomeProps> = ({ products, categories }) => {
           products={products}
         />
       </section>
-      <header
-        data-scroll
-        data-scroll-sticky
-        data-scroll-target="#container"
-        className={classnames(styles.header, { [styles.scrolling]: scrolling })}
-      >
-        <div className={styles.container}>
-          <div className={styles.content}>
-            <Logo />
-            <Cart />
-          </div>
-        </div>
-      </header>
     </div>
   )
 }
 
-export const getServerSideProps = getServerSidePropsWithSDK<HomeProps>((SDK) => async () => {
-  const products = await SDK.productSearch([
-    {
-      paging: { limit: 4 },
-    },
-    {
-      items: {
-        nodes: {
-          id: true,
-          name: true,
-          slug: true,
-          mainImage: {
-            asset: {
-              url: true,
-            },
-          },
-          price: {
-            minPrice: true,
-          },
-        },
-      },
-    },
-  ])
-
-  const categories = await SDK.productCategories([
-    {},
-    {
-      nodes: {
-        id: true,
-        name: true,
-        slug: true,
-      },
-    },
-  ])
+export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+  const { productSearch, productCategories } = await SDK.request('query')(
+    selector,
+  )
 
   return {
     props: {
-      products: products.items.nodes,
-      categories: categories.nodes,
+      products: productSearch.items,
+      categories: productCategories.items,
     },
   }
-})
+}
 
 export default Home

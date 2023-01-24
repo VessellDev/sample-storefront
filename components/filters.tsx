@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import {
   Collapse,
   FormControl,
@@ -13,18 +13,8 @@ import styles from './filters.module.css'
 import { mockFilters } from 'mock'
 import { FilterList, KeyboardArrowDown } from '@mui/icons-material'
 import classnames from 'classnames'
-import { useLocomotiveScroll } from 'react-locomotive-scroll'
 
 const Filters: FC = () => {
-  const { scroll } = useLocomotiveScroll()
-  const [scrollY, setScrollY] = useState(0)
-
-  useEffect(() => {
-    scroll?.on('scroll', (args: any) => {
-      setScrollY(args.delta.y)
-    })
-  }, [scroll])
-
   const mobile = useMediaQuery('(max-width: 1024px)')
 
   const [active, setActive] = useState(false)

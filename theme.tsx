@@ -64,6 +64,24 @@ const theme = createTheme({
     MuiTextField: {
       defaultProps: {
         variant: 'filled',
+        InputProps: { disableUnderline: true },
+      },
+    },
+    MuiFilledInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          opacity: 0.35,
+          '&.Mui-focused': {
+            opacity: 1,
+          },
+        },
       },
     },
     MuiSelect: {
@@ -86,6 +104,24 @@ const theme = createTheme({
       styleOverrides: {
         separator: {
           display: 'none',
+        },
+      },
+    },
+    MuiCard: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          borderRadius: 16,
+        },
+      },
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          backgroundColor: grey[100],
         },
       },
     },

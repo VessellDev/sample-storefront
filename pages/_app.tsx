@@ -3,23 +3,25 @@ import type { AppProps } from 'next/app'
 import { CacheProvider, EmotionCache } from '@emotion/react'
 import theme from 'theme'
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { useRef } from 'react'
-import { LocomotiveScrollProvider } from 'react-locomotive-scroll'
-import { useRouter } from 'next/router'
-import 'locomotive-scroll/dist/locomotive-scroll.css'
 import createEmotionCache from 'createEmotionCache'
 import Head from 'next/head'
+import { SnackbarProvider } from 'notistack'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 const clientSideEmotionCache = createEmotionCache()
+const queryClient = new QueryClient()
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
 
 function MyApp(props: MyAppProps) {
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
-  const containerRef = useRef(null)
-  const { asPath } = useRouter()
+  const {
+    Component,
+    emotionCache = clientSideEmotionCache,
+    pageProps,
+    router,
+  } = props
 
   return (
     <CacheProvider value={emotionCache}>
@@ -28,19 +30,11 @@ function MyApp(props: MyAppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <LocomotiveScrollProvider
-          options={{ smooth: true }}
-          location={asPath}
-          containerRef={containerRef}
-          onLocationChange={(scroll: any) => {
-            scroll.scrollTo(0, { duration: 0, disableLerp: true })
-          }}
-          watch={[asPath]}
-        >
-          <main data-scroll-container ref={containerRef}>
+        <QueryClientProvider client={queryClient}>
+          <SnackbarProvider autoHideDuration={5000}>
             <Component {...pageProps} />
-          </main>
-        </LocomotiveScrollProvider>
+          </SnackbarProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>
   )

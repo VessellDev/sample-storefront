@@ -1,36 +1,3 @@
-.header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-.header .content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 32px;
-  transition: all 0.3s ease-in-out;
-}
-.header.scrolling .content {
-  padding: 16px 32px;
-}
-
-.header .container {
-  position: relative;
-}
-.header .container::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  max-height: 0;
-  background: white;
-  transition: all 0.3s ease-in-out 0.05s;
-}
-
-.header.scrolling .container::before {
-  max-height: 100%;
-}
-
 .highlights {
   width: 100%;
   height: 100vh;
