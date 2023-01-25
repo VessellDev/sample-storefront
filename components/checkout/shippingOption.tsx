@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Box, CardContent, Typography } from '@mui/material'
 
 interface ShippingOptionProps extends ShippingOptionType {
-  onClick: () => void
+  onClick?: () => void
 }
 
 const ShippingOption: FC<ShippingOptionProps> = ({
@@ -13,7 +13,7 @@ const ShippingOption: FC<ShippingOptionProps> = ({
   delivery,
   onClick,
 }) => (
-  <CardContent onClick={onClick} sx={{ cursor: 'pointer' }}>
+  <CardContent onClick={onClick} sx={{ cursor: onClick && 'pointer' }}>
     <Box
       width="100%"
       display="flex"

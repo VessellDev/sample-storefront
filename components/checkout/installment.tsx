@@ -11,9 +11,9 @@ const Installment: FC<InstallmentProps> = ({ installment, total, onClick }) => (
   <CardContent
     onClick={onClick}
     sx={{
-      cursor: 'pointer',
+      cursor: onClick && 'pointer',
       transition: 'all 0.2s ease-in-out',
-      '&:hover': {
+      '&:hover': onClick && {
         transform: 'translateX(8px)',
       },
     }}

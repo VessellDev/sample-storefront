@@ -1,5 +1,5 @@
 import { Check } from '@mui/icons-material'
-import { Box, Chip, LinearProgress } from '@mui/material'
+import { Box, Card, Chip } from '@mui/material'
 import {
   PaymentMethodGroup,
   ShippingClassification,
@@ -52,7 +52,9 @@ interface SummaryProps {
 const Summary: FC<SummaryProps> = ({ purchase }) => (
   <Box position="sticky" top={32} display="flex" flexDirection="column" gap={2}>
     {purchase.items.map(({ id, inventoryItem, quantity }) => (
-      <Item key={id} {...inventoryItem} quantity={quantity} />
+      <Card key={id}>
+        <Item {...inventoryItem} quantity={quantity} />
+      </Card>
     ))}
     <Box display="flex" alignItems="center" justifyContent="flex-end" gap={2}>
       {purchase.shippingClassification && (
