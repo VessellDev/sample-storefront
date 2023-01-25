@@ -76,7 +76,7 @@ export type StepFormProps = StepDataProps & {
 }
 
 export type StepResumeProps = StepDataProps & {
-  onClick: () => void
+  onClick?: () => void
 }
 
 const Step: FC<StepProps> = ({
