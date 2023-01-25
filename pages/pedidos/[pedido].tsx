@@ -51,6 +51,7 @@ const selector = Selector('Query')({
       items: {
         id: true,
         quantity: true,
+        status: true,
         inventoryItem: {
           id: true,
           product: {
@@ -114,9 +115,16 @@ const Purchase: NextPage = () => {
                     <Typography variant="h3" color="textPrimary">
                       Produtos
                     </Typography>
-                    {purchase.items.map(({ id, inventoryItem, quantity }) => (
-                      <Item key={id} {...inventoryItem} quantity={quantity} />
-                    ))}
+                    {purchase.items.map(
+                      ({ id, inventoryItem, quantity, status }) => (
+                        <Item
+                          key={id}
+                          {...inventoryItem}
+                          quantity={quantity}
+                          status={status}
+                        />
+                      ),
+                    )}
                     <Price value={purchase.total} />
                   </Box>
                 </Card>
