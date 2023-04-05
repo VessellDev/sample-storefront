@@ -11,20 +11,16 @@ interface Child {
 export const findMatchingSlug = (
   children: Child[],
   attributeValueOptions: AttributeValueOption[],
-) => {
-  console.log(children, attributeValueOptions)
-  return (
-    children.find(
-      (child) =>
-        attributeValueOptions
-          .map((attributeValueOption) =>
-            child.attributeValueOptions.find(
-              ({ attributeId, optionId }) =>
-                attributeId === attributeValueOption.attributeId &&
-                optionId === attributeValueOption.optionId,
-            ),
-          )
-          .filter((matched) => !matched).length === 0,
-    )?.slug || ''
-  )
-}
+) =>
+  children.find(
+    (child) =>
+      attributeValueOptions
+        .map((attributeValueOption) =>
+          child.attributeValueOptions.find(
+            ({ attributeId, optionId }) =>
+              attributeId === attributeValueOption.attributeId &&
+              optionId === attributeValueOption.optionId,
+          ),
+        )
+        .filter((matched) => !matched).length === 0,
+  )?.slug || ''
