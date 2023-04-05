@@ -3,8 +3,6 @@ import { $, Selector } from '@vessell/sdk/dist/cjs/zeus'
 import Price from 'components/productPage/price'
 import { FC } from 'react'
 import styles from './properties.module.css'
-import PurchaseButton from './purchaseButton'
-import Shipping from './shipping'
 
 interface PropertiesProps {
   id: string
@@ -16,19 +14,9 @@ interface PropertiesProps {
       url: string
     }
   }
-  inventoryItems?: {
-    id: string
-    price: number
-  }[]
 }
 
-const Properties: FC<PropertiesProps> = ({
-  name,
-  inventoryItems,
-  shortDescription,
-}) => {
-  const item = inventoryItems && inventoryItems[0]
-
+const Properties: FC<PropertiesProps> = ({ name, shortDescription }) => {
   return (
     <>
       <div>
@@ -37,19 +25,6 @@ const Properties: FC<PropertiesProps> = ({
           {shortDescription}
         </Typography>
       </div>
-      {item && (
-        <div className={styles.footer}>
-          <Price value={item.price} />
-          <div className={styles.actions}>
-            <div className={styles['left-button']}>
-              <Shipping inventoryItemId={item.id} />
-            </div>
-            <div className={styles['right-button']}>
-              <PurchaseButton inventoryItemId={item.id} />
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }

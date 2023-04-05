@@ -30,6 +30,10 @@ const selector = Selector('Query')({
         price: {
           minPrice: true,
         },
+        children: {
+          mainImage: { asset: { url: true } },
+          slug: true,
+        },
       },
     },
   ],

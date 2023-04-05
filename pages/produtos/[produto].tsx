@@ -12,6 +12,10 @@ import Slideshow from 'components/productPage/slideshow'
 import { GetServerSideProps, NextPage } from 'next'
 import SDK from 'sdk'
 import styles from './produto.module.css'
+import Attribute from 'components/productPage/attribute'
+import Price from 'components/checkout/price'
+import Shipping from 'components/productPage/shipping'
+import PurchaseButton from 'components/productPage/purchaseButton'
 
 const productSelector = Selector('Query')({
   product: [
@@ -24,6 +28,39 @@ const productSelector = Selector('Query')({
       shortDescription: true,
       inventoryItems: { id: true, price: true },
       categories: { id: true, name: true, slug: true },
+      attributeValueOptions: [
+        {},
+        {
+          attributeId: true,
+          optionId: true,
+        },
+      ],
+      parent: {
+        children: {
+          slug: true,
+          attributeValueOptions: [
+            {},
+            {
+              attributeId: true,
+              optionId: true,
+            },
+          ],
+        },
+        variantAttributes: {
+          attribute: { id: true, name: true },
+          variantOptions: {
+            option: {
+              '...on ProductAttributeOptionColor': {
+                id: true,
+                name: true,
+                color: true,
+              },
+              '...on ProductAttributeOptionImage': { id: true, name: true },
+              '...on ProductAttributeOptionText': { id: true, name: true },
+            },
+          },
+        },
+      },
     },
   ],
 })
@@ -36,6 +73,7 @@ interface ProductProps {
 
 const Product: NextPage<ProductProps> = ({ product }) => {
   const category = product.categories[0]
+  const item = product.inventoryItems && product.inventoryItems[0]
 
   return (
     <div className={styles.wrapper}>
@@ -60,7 +98,34 @@ const Product: NextPage<ProductProps> = ({ product }) => {
           <Slideshow image={product.mainImage?.asset.url} />
         </div>
         <div className={styles.right}>
-          <Properties {...product} />
+          <div>
+            <Properties {...product} />
+            {product.parent &&
+              product.parent.variantAttributes.map((variantAttribute) => (
+                <Attribute
+                  key={variantAttribute.attribute.id}
+                  children={product.parent!.children}
+                  attributeValueOptions={product.attributeValueOptions}
+                  variantAttributeIds={product.parent!.variantAttributes.map(
+                    ({ attribute }) => attribute.id,
+                  )}
+                  {...variantAttribute}
+                />
+              ))}
+          </div>
+          {item && (
+            <div className={styles.footer}>
+              <Price value={item.price} />
+              <div className={styles.actions}>
+                <div className={styles['left-button']}>
+                  <Shipping inventoryItemId={item.id} />
+                </div>
+                <div className={styles['right-button']}>
+                  <PurchaseButton inventoryItemId={item.id} />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
