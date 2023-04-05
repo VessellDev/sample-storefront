@@ -1,51 +1,93 @@
 import { Avatar, Chip, Typography } from '@mui/material'
-import { FC, useCallback } from 'react'
-import { AttributeType } from 'types/fullProduct'
+import { FC, useMemo } from 'react'
 import styles from './attribute.module.css'
+import Link from 'next/link'
+import { findMatchingSlug } from 'helpers/slugHelper'
 
-interface AttributeProps extends AttributeType {
-  selected?: string[]
-  onSelect: (attributeId: string, optionId: string) => void
+interface AttributeProps {
+  attribute: {
+    id: string
+    name: string
+  }
+  variantOptions: {
+    option:
+      | { id: string; name: string; color: string }
+      | { id: string; name: string }
+      | { id: string; name: string }
+  }[]
+  children: {
+    slug: string
+    attributeValueOptions: {
+      attributeId: string
+      optionId: string
+    }[]
+  }[]
+  attributeValueOptions: {
+    attributeId: string
+    optionId: string
+  }[]
+  variantAttributeIds: string[]
 }
 
 const Attribute: FC<AttributeProps> = ({
-  id: attributeId,
-  label,
-  options,
-  selected,
-  onSelect,
+  attribute,
+  variantOptions,
+  children,
+  attributeValueOptions,
+  variantAttributeIds,
 }) => {
-  const isSelected = useCallback(
-    (id: string) => selected?.includes(id),
-    [selected],
+  const selected = useMemo(
+    () =>
+      attributeValueOptions.find(
+        ({ attributeId }) => attributeId === attribute.id,
+      )?.optionId,
+    [attributeValueOptions],
   )
 
   return (
     <div className={styles.attribute}>
-      <Typography variant="subtitle2">{label}</Typography>
+      <Typography variant="subtitle2">{attribute.name}</Typography>
       <div>
-        {options.map(({ id: optionId, label, hex }) => (
-          <Chip
-            key={optionId}
-            style={isSelected(optionId) ? { backgroundColor: hex } : undefined}
-            color={isSelected(optionId) ? 'primary' : 'default'}
-            variant={!isSelected(optionId) ? 'outlined' : undefined}
-            className={styles.option}
-            label={label}
-            clickable
-            onClick={() => onSelect(attributeId, optionId)}
-            avatar={
-              hex ? (
-                <Avatar
-                  className={styles.avatar}
-                  style={{ backgroundColor: hex }}
-                >
-                  {' '}
-                </Avatar>
-              ) : undefined
-            }
-          />
-        ))}
+        {variantOptions
+          .map((variantOption) => ({
+            ...variantOption,
+            slug: findMatchingSlug(children, [
+              ...attributeValueOptions
+                .filter(({ attributeId }) =>
+                  variantAttributeIds.includes(attributeId),
+                )
+                .filter(
+                  ({ attributeId, optionId }) =>
+                    attributeId !== attribute.id &&
+                    optionId !== variantOption.option.id,
+                ),
+              { attributeId: attribute.id, optionId: variantOption.option.id },
+            ]) as string,
+          }))
+          .map(({ option: { id, name, ...option }, slug }) => (
+            <Link href={slug} passHref>
+              <Chip
+                disabled={!slug}
+                component="a"
+                key={id}
+                color={id === selected ? 'primary' : 'default'}
+                variant={id !== selected ? 'outlined' : undefined}
+                className={styles.option}
+                label={name}
+                clickable
+                avatar={
+                  'color' in option ? (
+                    <Avatar
+                      className={styles.avatar}
+                      style={{ backgroundColor: option.color }}
+                    >
+                      {' '}
+                    </Avatar>
+                  ) : undefined
+                }
+              />
+            </Link>
+          ))}
       </div>
     </div>
   )

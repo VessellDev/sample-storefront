@@ -12,16 +12,40 @@ export interface ProductProps {
       url: string
     }
   }
+  children: {
+    mainImage?: {
+      asset: {
+        url: string
+      }
+    }
+    slug: string
+  }[]
   price?: {
     minPrice: number
   }
 }
 
-const Product: FC<ProductProps> = ({ id, slug, mainImage, name, price }) => (
-  <Link href={`/produtos/${slug}`} passHref>
+const Product: FC<ProductProps> = ({
+  id,
+  slug,
+  mainImage,
+  name,
+  price,
+  children,
+}) => (
+  <Link
+    href={`/produtos/${children && children[0] ? children[0].slug : slug}`}
+    passHref
+  >
     <div className={styles.product}>
       <div
-        style={{ backgroundImage: `url(${mainImage?.asset.url})` }}
+        style={{
+          backgroundImage: `url(${
+            children && children[0]
+              ? children[0].mainImage?.asset.url
+              : mainImage?.asset.url
+          })`,
+        }}
         className={styles.image}
       />
       <div className={styles.content}>
