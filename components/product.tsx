@@ -12,7 +12,7 @@ export interface ProductProps {
       url: string
     }
   }
-  children: {
+  childProducts?: {
     mainImage?: {
       asset: {
         url: string
@@ -31,18 +31,20 @@ const Product: FC<ProductProps> = ({
   mainImage,
   name,
   price,
-  children,
+  childProducts,
 }) => (
   <Link
-    href={`/produtos/${children && children[0] ? children[0].slug : slug}`}
+    href={`/produtos/${
+      childProducts && childProducts[0] ? childProducts[0].slug : slug
+    }`}
     passHref
   >
     <div className={styles.product}>
       <div
         style={{
           backgroundImage: `url(${
-            children && children[0]
-              ? children[0].mainImage?.asset.url
+            childProducts && childProducts[0]
+              ? childProducts[0].mainImage?.asset.url
               : mainImage?.asset.url
           })`,
         }}

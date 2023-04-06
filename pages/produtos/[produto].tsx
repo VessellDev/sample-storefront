@@ -104,7 +104,7 @@ const Product: NextPage<ProductProps> = ({ product }) => {
               product.parent.variantAttributes.map((variantAttribute) => (
                 <Attribute
                   key={variantAttribute.attribute.id}
-                  children={product.parent!.children}
+                  childProducts={product.parent!.children}
                   attributeValueOptions={product.attributeValueOptions}
                   variantAttributeIds={product.parent!.variantAttributes.map(
                     ({ attribute }) => attribute.id,

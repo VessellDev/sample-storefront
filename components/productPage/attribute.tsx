@@ -15,7 +15,7 @@ interface AttributeProps {
       | { id: string; name: string }
       | { id: string; name: string }
   }[]
-  children: {
+  childProducts: {
     slug: string
     attributeValueOptions: {
       attributeId: string
@@ -32,7 +32,7 @@ interface AttributeProps {
 const Attribute: FC<AttributeProps> = ({
   attribute,
   variantOptions,
-  children,
+  childProducts,
   attributeValueOptions,
   variantAttributeIds,
 }) => {
@@ -51,7 +51,7 @@ const Attribute: FC<AttributeProps> = ({
         {variantOptions
           .map((variantOption) => ({
             ...variantOption,
-            slug: findMatchingSlug(children, [
+            slug: findMatchingSlug(childProducts, [
               ...attributeValueOptions
                 .filter(({ attributeId }) =>
                   variantAttributeIds.includes(attributeId),
