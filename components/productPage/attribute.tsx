@@ -65,7 +65,7 @@ const Attribute: FC<AttributeProps> = ({
             ]) as string,
           }))
           .map(({ option: { id, name, ...option }, slug }) => (
-            <Link href={slug} passHref>
+            <Link key={id} href={slug} passHref>
               <Chip
                 disabled={!slug}
                 component="a"
